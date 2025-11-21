@@ -1,7 +1,7 @@
 <picture>
-  <source srcset="unfk-lt" media="(prefers-color-scheme: dark)">
-  <source srcset="unfk-dk" media="(prefers-color-scheme: light)">
-  <img src="unfk-lt" alt="OpenCode logo">
+  <source srcset="unfk-lt.png" media="(prefers-color-scheme: dark)">
+  <source srcset="unfk-dk.png" media="(prefers-color-scheme: light)">
+  <img src="unfk-lt.png" alt="OpenCode logo">
 </picture>
 
 <p align="center">A fast, modern CLI tool for scanning and repairing file formatting issues</p>
