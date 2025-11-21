@@ -1,0 +1,18 @@
+# Pre-commit hooks for unfk
+# See https://pre-commit.com for more information
+
+- id: unfk-check
+  name: unfk (check)
+  description: Check files for formatting issues
+  entry: unfk scan
+  language: rust
+  types: [text]
+  pass_filenames: true
+
+- id: unfk-fix
+  name: unfk (fix)
+  description: Fix file formatting issues
+  entry: unfk fix
+  language: rust
+  types: [text]
+  pass_filenames: true

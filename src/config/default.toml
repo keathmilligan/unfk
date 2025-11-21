@@ -1,0 +1,73 @@
+# unfk configuration file
+# See https://github.com/yourusername/unfk for documentation
+
+# Global settings
+line-ending = "lf"
+encoding = "utf-8"
+final-newline = true
+trailing-whitespace = "remove"
+
+# Maximum file size to process (files larger than this are skipped)
+max-file-size = 10485760  # 10MB
+
+[indent]
+style = "spaces"
+width = 2
+
+# Patterns to ignore (in addition to .gitignore)
+ignore = [
+    "node_modules",
+    "target",
+    ".git",
+    "*.min.js",
+    "*.min.css",
+    "*.lock",
+    "package-lock.json",
+    "yarn.lock",
+    "Cargo.lock",
+]
+
+# Per-pattern rules (later rules override earlier ones)
+
+[[rules]]
+pattern = "Makefile"
+[rules.indent]
+style = "tabs"
+
+[[rules]]
+pattern = "*.mk"
+[rules.indent]
+style = "tabs"
+
+[[rules]]
+pattern = "*.go"
+[rules.indent]
+style = "tabs"
+
+[[rules]]
+pattern = "*.py"
+[rules.indent]
+style = "spaces"
+width = 4
+
+[[rules]]
+pattern = "*.rs"
+[rules.indent]
+style = "spaces"
+width = 4
+
+[[rules]]
+pattern = "*.bat"
+line-ending = "crlf"
+
+[[rules]]
+pattern = "*.cmd"
+line-ending = "crlf"
+
+[[rules]]
+pattern = "*.ps1"
+line-ending = "crlf"
+
+[[rules]]
+pattern = "*.psm1"
+line-ending = "crlf"
