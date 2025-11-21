@@ -4,6 +4,8 @@
   <img src="unfk-lt.png" alt="OpenCode logo">
 </picture>
 
+_`UNiversal File... Korrector?`_
+
 A fast, modern CLI tool for scanning and repairing file formatting issues
 
 ---
