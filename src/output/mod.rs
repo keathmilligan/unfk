@@ -23,14 +23,30 @@ impl<'a> Reporter<'a> {
     }
 
     /// Report issues found in a file
+    ///
+    /// Errors (fixable issues) are shown in red, warnings (unfixable) in yellow.
     pub fn report_file_issues(&self, path: &Path, issues: &[Issue]) {
         if self.cli.quiet {
             return;
         }
 
-        println!("{}", path.display().to_string().red());
+        println!("{}", path.display().to_string().bold());
         for issue in issues {
-            println!("  {} {}", "•".yellow(), issue.description());
+            if issue.is_fixable() {
+                // Errors (fixable) - shown in red
+                println!(
+                    "  {} {}",
+                    "error:".red().bold(),
+                    issue.description().red()
+                );
+            } else {
+                // Warnings (unfixable) - shown in yellow
+                println!(
+                    "  {} {}",
+                    "warning:".yellow().bold(),
+                    issue.description().yellow()
+                );
+            }
         }
     }
 
@@ -85,23 +101,34 @@ impl<'a> Reporter<'a> {
         }
     }
 
-    /// Report scan summary
-    pub fn report_summary(&self, files_with_issues: usize, total_issues: usize) {
+    /// Report scan summary with separate error and warning counts
+    pub fn report_summary(
+        &self,
+        files_with_issues: usize,
+        error_count: usize,
+        warning_count: usize,
+    ) {
         if self.cli.quiet {
             return;
         }
 
         println!();
+        let total_issues = error_count + warning_count;
         if total_issues == 0 {
             println!("{}", "No issues found.".green());
         } else {
+            // Build summary message with separate error/warning counts
+            let mut parts = Vec::new();
+            if error_count > 0 {
+                parts.push(format!("{} errors", error_count).red().to_string());
+            }
+            if warning_count > 0 {
+                parts.push(format!("{} warnings", warning_count).yellow().to_string());
+            }
             println!(
-                "{}",
-                format!(
-                    "Found {} issues in {} files.",
-                    total_issues, files_with_issues
-                )
-                .red()
+                "Found {} in {} files.",
+                parts.join(", "),
+                files_with_issues
             );
         }
     }

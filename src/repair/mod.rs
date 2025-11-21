@@ -97,12 +97,11 @@ impl<'a> Repairer<'a> {
         // Rebuild content with proper line endings
         let mut result = lines.join(line_ending);
 
-        // Handle final newline
-        for issue in issues {
-            if matches!(issue, Issue::MissingFinalNewline) && settings.final_newline {
-                if !result.ends_with('\n') && !result.ends_with("\r\n") {
-                    result.push_str(line_ending);
-                }
+        // Ensure final newline based on config setting
+        // This is needed because lines.join() doesn't preserve the original trailing newline
+        if settings.final_newline {
+            if !result.ends_with('\n') && !result.ends_with("\r\n") {
+                result.push_str(line_ending);
             }
         }
 
@@ -265,5 +264,33 @@ mod tests {
 
         let content = std::fs::read_to_string(&file_path).unwrap();
         assert!(!content.contains("   "));
+    }
+
+    #[test]
+    fn test_repair_preserves_final_newline() {
+        // Regression test: fixing trailing whitespace should preserve the final newline
+        let config = create_config();
+        let repairer = Repairer::new(&config);
+
+        let temp_dir = tempfile::tempdir().unwrap();
+        let file_path = temp_dir.path().join("test_newline.txt");
+
+        {
+            let mut file = std::fs::File::create(&file_path).unwrap();
+            // Write file with trailing whitespace BUT with a final newline
+            write!(file, "line1   \nline2\n").unwrap();
+        }
+
+        // Verify the file has a final newline before repair
+        let before = std::fs::read_to_string(&file_path).unwrap();
+        assert!(before.ends_with('\n'), "File should have final newline before repair");
+
+        // Only report trailing whitespace issue (no MissingFinalNewline)
+        let issues = vec![Issue::TrailingWhitespace { line_count: 1 }];
+        repairer.repair(&file_path, &issues).unwrap();
+
+        let content = std::fs::read_to_string(&file_path).unwrap();
+        assert!(!content.contains("   "), "Trailing whitespace should be removed");
+        assert!(content.ends_with('\n'), "Final newline should be preserved after repair");
     }
 }

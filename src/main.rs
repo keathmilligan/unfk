@@ -41,8 +41,8 @@ fn run() -> Result<unfk::ExitCode> {
         None => {
             run_scan(&cli, &config, &reporter, &cli.paths)
         }
-        Some(Commands::Fix { paths, dry_run }) => {
-            run_fix(&cli, &config, &reporter, paths, *dry_run || cli.dry_run)
+        Some(Commands::Fix { paths, dry_run, all }) => {
+            run_fix(&cli, &config, &reporter, paths, *dry_run || cli.dry_run, *all)
         }
         Some(Commands::Init { force }) => run_init(*force),
         Some(Commands::Types { show }) => run_types(show.as_deref()),
@@ -65,7 +65,8 @@ fn run_scan(
     let discovery = FileDiscovery::new(config, cli);
     let analyzer = unfk::analysis::Analyzer::new(config);
 
-    let mut total_issues = 0;
+    let mut error_count = 0;
+    let mut warning_count = 0;
     let mut files_with_issues = 0;
 
     for path in &paths {
@@ -75,7 +76,13 @@ fn run_scan(
             match analyzer.analyze(file_path) {
                 Ok(issues) if !issues.is_empty() => {
                     files_with_issues += 1;
-                    total_issues += issues.len();
+                    for issue in &issues {
+                        if issue.is_fixable() {
+                            error_count += 1;
+                        } else {
+                            warning_count += 1;
+                        }
+                    }
                     reporter.report_file_issues(file_path, &issues);
                 }
                 Ok(_) => {
@@ -88,9 +95,9 @@ fn run_scan(
         }
     }
 
-    reporter.report_summary(files_with_issues, total_issues);
+    reporter.report_summary(files_with_issues, error_count, warning_count);
 
-    if total_issues > 0 {
+    if error_count + warning_count > 0 {
         Ok(unfk::ExitCode::IssuesFound)
     } else {
         Ok(unfk::ExitCode::Success)
@@ -103,6 +110,7 @@ fn run_fix(
     reporter: &Reporter,
     paths: &[std::path::PathBuf],
     dry_run: bool,
+    fix_all: bool,
 ) -> Result<unfk::ExitCode> {
     let paths = if paths.is_empty() {
         vec![std::path::PathBuf::from(".")]
@@ -123,13 +131,24 @@ fn run_fix(
 
             match analyzer.analyze(file_path) {
                 Ok(issues) if !issues.is_empty() => {
+                    // Filter issues: only fixable (errors) unless --all is specified
+                    let issues_to_fix: Vec<_> = if fix_all {
+                        issues.clone()
+                    } else {
+                        issues.iter().filter(|i| i.is_fixable()).cloned().collect()
+                    };
+
+                    if issues_to_fix.is_empty() {
+                        continue;
+                    }
+
                     if dry_run {
-                        reporter.report_would_fix(file_path, &issues);
+                        reporter.report_would_fix(file_path, &issues_to_fix);
                         total_fixed += 1;
                     } else {
-                        match repairer.repair(file_path, &issues) {
+                        match repairer.repair(file_path, &issues_to_fix) {
                             Ok(()) => {
-                                reporter.report_fixed(file_path, &issues);
+                                reporter.report_fixed(file_path, &issues_to_fix);
                                 total_fixed += 1;
                             }
                             Err(e) => {

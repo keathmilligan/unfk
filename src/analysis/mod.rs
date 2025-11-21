@@ -53,6 +53,20 @@ pub enum Issue {
 }
 
 impl Issue {
+    /// Check if this issue can be automatically fixed by the `fix` command
+    pub fn is_fixable(&self) -> bool {
+        match self {
+            // These issues cannot be automatically fixed (warnings)
+            Issue::TabsForbidden => false,
+            Issue::NonUtf8Encoding { .. } => false,
+            Issue::InvalidUtf8 { .. } => false,
+            Issue::MissingFinalNewline => false,
+            Issue::TrailingWhitespace { .. } => false,
+            // All other issues can be fixed (errors)
+            _ => true,
+        }
+    }
+
     /// Get a human-readable description of the issue
     pub fn description(&self) -> String {
         match self {
@@ -60,7 +74,7 @@ impl Issue {
                 format!("Mixed line endings ({lf_count} LF, {crlf_count} CRLF)")
             }
             Issue::WrongLineEnding { expected, found } => {
-                format!("Wrong line ending (expected {expected:?}, found {found:?})")
+                format!("Wrong line ending (expected {expected}, found {found})")
             }
             Issue::MixedIndentation { tabs, spaces } => {
                 format!("Mixed indentation ({tabs} tabs, {spaces} spaces)")
@@ -96,6 +110,18 @@ pub enum LineEndingStyle {
     Cr,
     Mixed,
     None,
+}
+
+impl std::fmt::Display for LineEndingStyle {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            LineEndingStyle::Lf => write!(f, "LF"),
+            LineEndingStyle::Crlf => write!(f, "CRLF"),
+            LineEndingStyle::Cr => write!(f, "CR"),
+            LineEndingStyle::Mixed => write!(f, "Mixed"),
+            LineEndingStyle::None => write!(f, "None"),
+        }
+    }
 }
 
 /// Indentation style
@@ -193,5 +219,60 @@ mod tests {
         };
         assert!(issue.description().contains("10 LF"));
         assert!(issue.description().contains("2 CRLF"));
+    }
+
+    #[test]
+    fn test_is_fixable_returns_true_for_fixable_issues() {
+        // All these issues should be fixable (errors)
+        let fixable_issues = vec![
+            Issue::MixedLineEndings {
+                lf_count: 10,
+                crlf_count: 2,
+            },
+            Issue::WrongLineEnding {
+                expected: LineEndingStyle::Lf,
+                found: LineEndingStyle::Crlf,
+            },
+            Issue::MixedIndentation { tabs: 5, spaces: 3 },
+            Issue::WrongIndentation {
+                expected: IndentationStyle::Spaces,
+                found: IndentationStyle::Tabs,
+            },
+            Issue::TabsRequired,
+            Issue::Utf8Bom,
+            Issue::ExcessiveTrailingBlankLines { count: 3 },
+        ];
+
+        for issue in fixable_issues {
+            assert!(
+                issue.is_fixable(),
+                "{:?} should be fixable",
+                issue
+            );
+        }
+    }
+
+    #[test]
+    fn test_is_fixable_returns_false_for_unfixable_issues() {
+        // These issues cannot be automatically fixed (warnings)
+        let unfixable_issues = vec![
+            Issue::TabsForbidden,
+            Issue::NonUtf8Encoding {
+                detected: "windows-1252".to_string(),
+            },
+            Issue::InvalidUtf8 {
+                positions: vec![10, 20, 30],
+            },
+            Issue::MissingFinalNewline,
+            Issue::TrailingWhitespace { line_count: 5 },
+        ];
+
+        for issue in unfixable_issues {
+            assert!(
+                !issue.is_fixable(),
+                "{:?} should NOT be fixable",
+                issue
+            );
+        }
     }
 }

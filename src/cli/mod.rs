@@ -117,6 +117,10 @@ pub enum Commands {
         /// Show what would be done without making changes
         #[arg(long)]
         dry_run: bool,
+
+        /// Fix all issues including warnings (e.g., trailing whitespace, missing final newline)
+        #[arg(long, short = 'a')]
+        all: bool,
     },
 
     /// Create a default configuration file
