@@ -12,7 +12,7 @@ A fast, modern CLI tool for scanning and repairing file formatting issues
 
 ## Overview
 
-**unfk** detects and fixes common file formatting inconsistencies across your codebase:
+`unfk` detects and fixes common file formatting inconsistencies across your codebase:
 
 - **Line endings** — mixed or incorrect line endings (LF vs CRLF)
 - **Indentation** — inconsistent tabs/spaces or wrong indent width
@@ -20,9 +20,9 @@ A fast, modern CLI tool for scanning and repairing file formatting issues
 - **Final newlines** — missing or extra newlines at end of file
 - **Trailing whitespace** — spaces/tabs at end of lines
 
-Unlike code formatters such as Prettier or Black, unfk is not concerned with code style or syntax. Instead, it focuses on low-level file hygiene issues that affect a much broader range of file types—config files, scripts, data files, documentation, and more.
+Unlike code formatters such as Prettier or Black, `unfk` is not concerned with code style or syntax. Instead, it focuses on low-level file hygiene issues that affect a much broader range of file types—config files, scripts, data files, documentation, and more.
 
-unfk is aware of file type-specific conventions and applies the right defaults automatically. For example:
+`unfk` is aware of file type-specific conventions and applies the right defaults automatically. For example:
 
 - Windows batch files (`.bat`, `.cmd`) and PowerShell scripts require CRLF line endings
 - `Makefile` requires tabs for indentation
@@ -65,13 +65,13 @@ unfk init
 
 ## Configuration
 
-A config file is not required — unfk assumes sane defaults for most file types and modern development conventions.
+A config file is not required — `unfk` assumes sane defaults for most file types and modern development conventions.
 
 ### EditorConfig Support
 
-unfk automatically reads `.editorconfig` files if present. This lets you share formatting settings across tools and editors without duplicating configuration. The following EditorConfig properties are supported:
+`unfk` automatically reads `.editorconfig` files if present. This lets you share formatting settings across tools and editors without duplicating configuration. The following EditorConfig properties are supported:
 
-| EditorConfig Property       | unfk Setting              |
+| EditorConfig Property       | `unfk` Setting            |
 |-----------------------------|---------------------------|
 | `end_of_line`               | Line ending style         |
 | `indent_style`              | Tabs or spaces            |
@@ -104,6 +104,36 @@ pattern = "*.py"
 [rules.indent]
 style = "spaces"
 width = 4
+```
+
+## Replacing Legacy Tools
+
+`unfk` can replace several single-purpose legacy utilities with one modern, file-type-aware tool:
+
+| Legacy Tool | `unfk` Equivalent |
+|-------------|-------------------|
+| `dos2unix` | `unfk fix --line-ending lf` |
+| `unix2dos` | `unfk fix --line-ending crlf` |
+| `mac2unix` | `unfk fix --line-ending lf` |
+| `fromdos` / `todos` | `unfk fix --line-ending lf` / `crlf` |
+
+### Why switch?
+
+- **File-type awareness** — `unfk` automatically uses the correct line ending for each file type. Windows batch files stay CRLF even when you normalize everything else to LF.
+- **Batch processing** — Fix entire directories recursively with proper gitignore support.
+- **More than line endings** — While you're at it, fix indentation, encoding, final newlines, and trailing whitespace too.
+- **Dry-run mode** — Preview changes with `--dry-run` before modifying files.
+- **Modern defaults** — Sensible out-of-the-box behavior for contemporary development workflows.
+
+```bash
+# Convert all files to LF (respecting file-type conventions)
+unfk fix --line-ending lf
+
+# Convert specific files to CRLF
+unfk fix --line-ending crlf src/scripts/*.bat
+
+# Preview what would change
+unfk fix --line-ending lf --dry-run
 ```
 
 ## License
