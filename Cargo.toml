@@ -1,12 +1,16 @@
 [package]
 name = "unfk"
-version = "0.1.0"
+version = "1.0.0"
 edition = "2021"
 description = "A fast, modern CLI tool for scanning and repairing file formatting issues"
 license = "MIT"
-repository = "https://github.com/yourusername/unfk"
+repository = "https://github.com/keathmilligan/unfk"
 keywords = ["cli", "formatting", "line-endings", "indentation", "encoding"]
 categories = ["command-line-utilities", "development-tools"]
+
+[[bin]]
+name = "unfk"
+path = "src/main.rs"
 
 [dependencies]
 # CLI framework
