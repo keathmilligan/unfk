@@ -191,7 +191,9 @@ fn run_types(show: Option<&str>) -> Result<unfk::ExitCode> {
         }
     } else {
         println!("Known file types:\n");
-        for file_type in registry.all() {
+        let mut file_types: Vec<_> = registry.all().iter().collect();
+        file_types.sort_by(|a, b| a.name.cmp(&b.name));
+        for file_type in file_types {
             println!(
                 "  {:<15} {}",
                 file_type.name,
