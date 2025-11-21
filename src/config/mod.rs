@@ -1,5 +1,7 @@
 //! Configuration management
 
+mod editorconfig;
+
 use std::path::{Path, PathBuf};
 
 use anyhow::{Context, Result};
@@ -7,6 +9,7 @@ use globset::{Glob, GlobSet, GlobSetBuilder};
 use serde::{Deserialize, Serialize};
 
 use crate::cli::Cli;
+pub use editorconfig::EditorConfigSettings;
 
 /// Main configuration struct
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -15,6 +18,10 @@ pub struct Config {
     /// Path to the config file that was loaded (if any)
     #[serde(skip)]
     pub source_path: Option<PathBuf>,
+
+    /// Whether EditorConfig integration is enabled
+    #[serde(skip)]
+    pub editorconfig_enabled: bool,
 
     /// Default line ending style
     #[serde(rename = "line-ending")]
@@ -51,6 +58,7 @@ impl Default for Config {
     fn default() -> Self {
         Self {
             source_path: None,
+            editorconfig_enabled: true,
             line_ending: LineEnding::Lf,
             encoding: "utf-8".to_string(),
             final_newline: true,
@@ -146,6 +154,11 @@ impl Config {
 
         // Add CLI excludes to ignore list
         self.ignore.extend(cli.exclude.clone());
+
+        // Handle --no-editorconfig flag
+        if cli.no_editorconfig {
+            self.editorconfig_enabled = false;
+        }
     }
 
     /// Build a GlobSet from the ignore patterns
@@ -170,7 +183,14 @@ impl Config {
     }
 
     /// Get the effective settings for a specific file
+    ///
+    /// Precedence order (highest to lowest):
+    /// 1. Per-pattern rules from unfk config
+    /// 2. EditorConfig settings (if enabled)
+    /// 3. Global unfk config settings
+    /// 4. Built-in defaults
     pub fn settings_for_file(&self, path: &Path) -> FileSettings {
+        // Start with unfk config defaults (or built-in defaults if no config)
         let mut settings = FileSettings {
             line_ending: self.line_ending,
             indent: self.indent.clone(),
@@ -179,7 +199,36 @@ impl Config {
             encoding: self.encoding.clone(),
         };
 
-        // Apply per-pattern rules
+        // Apply EditorConfig settings (if enabled)
+        // EditorConfig overrides defaults but is overridden by explicit unfk config
+        if self.editorconfig_enabled {
+            let ec_settings = EditorConfigSettings::for_file(path);
+
+            // Only apply EditorConfig values if unfk config is using defaults
+            // (i.e., no explicit config file was loaded)
+            if self.source_path.is_none() {
+                // No unfk config file - EditorConfig overrides defaults
+                if let Some(le) = ec_settings.line_ending {
+                    settings.line_ending = le;
+                }
+                if let Some(indent) = ec_settings.to_indent_config() {
+                    settings.indent = indent;
+                }
+                if let Some(fnl) = ec_settings.insert_final_newline {
+                    settings.final_newline = fnl;
+                }
+                if let Some(tw) = ec_settings.trim_trailing_whitespace {
+                    settings.trailing_whitespace = tw;
+                }
+                if let Some(charset) = ec_settings.charset {
+                    settings.encoding = charset;
+                }
+            }
+            // If unfk config exists, it takes precedence over EditorConfig
+            // (EditorConfig values are not applied to override explicit config)
+        }
+
+        // Apply per-pattern rules from unfk config (highest precedence)
         let path_str = path.to_string_lossy();
         for rule in &self.rules {
             if rule.matches(&path_str) {

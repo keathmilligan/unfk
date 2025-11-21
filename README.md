@@ -63,7 +63,28 @@ unfk init
 
 ## Configuration
 
-A config file is not required — unfk assumes sane defaults for most file types and modern development conventions. For custom rules, create `.unfkrc.toml` in your project root:
+A config file is not required — unfk assumes sane defaults for most file types and modern development conventions.
+
+### EditorConfig Support
+
+unfk automatically reads `.editorconfig` files if present. This lets you share formatting settings across tools and editors without duplicating configuration. The following EditorConfig properties are supported:
+
+| EditorConfig Property       | unfk Setting              |
+|-----------------------------|---------------------------|
+| `end_of_line`               | Line ending style         |
+| `indent_style`              | Tabs or spaces            |
+| `indent_size`               | Indent width              |
+| `charset`                   | File encoding             |
+| `trim_trailing_whitespace`  | Trailing whitespace       |
+| `insert_final_newline`      | Final newline             |
+
+**Precedence order:** CLI flags > `.unfkrc.toml` > `.editorconfig` > built-in defaults
+
+To disable EditorConfig integration, use `--no-editorconfig`.
+
+### Custom Configuration
+
+For custom rules, create `.unfkrc.toml` in your project root:
 
 ```toml
 line-ending = "lf"

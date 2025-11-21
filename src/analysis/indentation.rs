@@ -28,10 +28,16 @@ impl<'a> IndentationAnalyzer<'a> {
 
         let stats = self.analyze_indentation(text);
 
-        // Check for Makefile special case
+        // Check for file-type specific tab requirements
         if let Some(ft) = self.file_type {
+            // Tabs required (e.g., Makefiles)
             if ft.tabs_required && stats.space_indented_lines > 0 {
                 issues.push(Issue::TabsRequired);
+                return issues;
+            }
+            // Tabs forbidden (e.g., YAML, Python)
+            if ft.tabs_forbidden && stats.tab_indented_lines > 0 {
+                issues.push(Issue::TabsForbidden);
                 return issues;
             }
         }
@@ -182,5 +188,58 @@ mod tests {
         let issues = analyzer.analyze(content);
         assert_eq!(issues.len(), 1);
         assert!(matches!(issues[0], Issue::MixedIndentation { .. }));
+    }
+
+    #[test]
+    fn test_tabs_forbidden_yaml() {
+        use crate::filetypes::FileTypeRegistry;
+        use std::path::Path;
+
+        let settings = settings_with_spaces();
+        let registry = FileTypeRegistry::new();
+        let yaml_type = registry.detect(Path::new("test.yaml"));
+
+        let analyzer = IndentationAnalyzer::new(&settings, yaml_type);
+
+        // YAML with tabs should report TabsForbidden
+        let content = b"key:\n\tvalue: 1\n";
+        let issues = analyzer.analyze(content);
+        assert_eq!(issues.len(), 1);
+        assert!(matches!(issues[0], Issue::TabsForbidden));
+    }
+
+    #[test]
+    fn test_tabs_forbidden_python() {
+        use crate::filetypes::FileTypeRegistry;
+        use std::path::Path;
+
+        let settings = settings_with_spaces();
+        let registry = FileTypeRegistry::new();
+        let python_type = registry.detect(Path::new("test.py"));
+
+        let analyzer = IndentationAnalyzer::new(&settings, python_type);
+
+        // Python with tabs should report TabsForbidden
+        let content = b"def foo():\n\tprint('hello')\n";
+        let issues = analyzer.analyze(content);
+        assert_eq!(issues.len(), 1);
+        assert!(matches!(issues[0], Issue::TabsForbidden));
+    }
+
+    #[test]
+    fn test_yaml_spaces_ok() {
+        use crate::filetypes::FileTypeRegistry;
+        use std::path::Path;
+
+        let settings = settings_with_spaces();
+        let registry = FileTypeRegistry::new();
+        let yaml_type = registry.detect(Path::new("test.yaml"));
+
+        let analyzer = IndentationAnalyzer::new(&settings, yaml_type);
+
+        // YAML with spaces should be fine
+        let content = b"key:\n  value: 1\n";
+        let issues = analyzer.analyze(content);
+        assert!(issues.is_empty());
     }
 }

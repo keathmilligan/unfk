@@ -24,6 +24,7 @@ impl FileTypeRegistry {
                         width: 4,
                     },
                     tabs_required: true,
+                    tabs_forbidden: false,
                 },
                 // Go - tabs by convention
                 FileType {
@@ -36,6 +37,7 @@ impl FileTypeRegistry {
                         width: 4,
                     },
                     tabs_required: false,
+                    tabs_forbidden: false,
                 },
                 // Rust - 4 spaces
                 FileType {
@@ -48,8 +50,9 @@ impl FileTypeRegistry {
                         width: 4,
                     },
                     tabs_required: false,
+                    tabs_forbidden: false,
                 },
-                // Python - 4 spaces
+                // Python - 4 spaces (PEP8 strongly discourages tabs)
                 FileType {
                     name: "python".to_string(),
                     extensions: vec!["py", "pyi", "pyw"],
@@ -60,6 +63,7 @@ impl FileTypeRegistry {
                         width: 4,
                     },
                     tabs_required: false,
+                    tabs_forbidden: true,
                 },
                 // JavaScript/TypeScript - 2 spaces
                 FileType {
@@ -72,6 +76,7 @@ impl FileTypeRegistry {
                         width: 2,
                     },
                     tabs_required: false,
+                    tabs_forbidden: false,
                 },
                 FileType {
                     name: "typescript".to_string(),
@@ -83,8 +88,9 @@ impl FileTypeRegistry {
                         width: 2,
                     },
                     tabs_required: false,
+                    tabs_forbidden: false,
                 },
-                // YAML - 2 spaces
+                // YAML - 2 spaces (tabs forbidden per YAML spec)
                 FileType {
                     name: "yaml".to_string(),
                     extensions: vec!["yml", "yaml"],
@@ -95,6 +101,7 @@ impl FileTypeRegistry {
                         width: 2,
                     },
                     tabs_required: false,
+                    tabs_forbidden: true,
                 },
                 // JSON - 2 spaces
                 FileType {
@@ -107,6 +114,7 @@ impl FileTypeRegistry {
                         width: 2,
                     },
                     tabs_required: false,
+                    tabs_forbidden: false,
                 },
                 // TOML - 2 spaces
                 FileType {
@@ -119,6 +127,7 @@ impl FileTypeRegistry {
                         width: 2,
                     },
                     tabs_required: false,
+                    tabs_forbidden: false,
                 },
                 // Markdown
                 FileType {
@@ -131,6 +140,7 @@ impl FileTypeRegistry {
                         width: 2,
                     },
                     tabs_required: false,
+                    tabs_forbidden: false,
                 },
                 // Shell scripts
                 FileType {
@@ -143,6 +153,7 @@ impl FileTypeRegistry {
                         width: 2,
                     },
                     tabs_required: false,
+                    tabs_forbidden: false,
                 },
                 // Windows batch - CRLF
                 FileType {
@@ -155,6 +166,7 @@ impl FileTypeRegistry {
                         width: 4,
                     },
                     tabs_required: false,
+                    tabs_forbidden: false,
                 },
                 // PowerShell - CRLF
                 FileType {
@@ -167,6 +179,7 @@ impl FileTypeRegistry {
                         width: 4,
                     },
                     tabs_required: false,
+                    tabs_forbidden: false,
                 },
                 // C/C++
                 FileType {
@@ -179,6 +192,7 @@ impl FileTypeRegistry {
                         width: 4,
                     },
                     tabs_required: false,
+                    tabs_forbidden: false,
                 },
                 FileType {
                     name: "cpp".to_string(),
@@ -190,6 +204,7 @@ impl FileTypeRegistry {
                         width: 4,
                     },
                     tabs_required: false,
+                    tabs_forbidden: false,
                 },
                 // Java
                 FileType {
@@ -202,6 +217,7 @@ impl FileTypeRegistry {
                         width: 4,
                     },
                     tabs_required: false,
+                    tabs_forbidden: false,
                 },
                 // Ruby
                 FileType {
@@ -214,6 +230,7 @@ impl FileTypeRegistry {
                         width: 2,
                     },
                     tabs_required: false,
+                    tabs_forbidden: false,
                 },
                 // XML/HTML
                 FileType {
@@ -226,6 +243,7 @@ impl FileTypeRegistry {
                         width: 2,
                     },
                     tabs_required: false,
+                    tabs_forbidden: false,
                 },
                 FileType {
                     name: "html".to_string(),
@@ -237,6 +255,7 @@ impl FileTypeRegistry {
                         width: 2,
                     },
                     tabs_required: false,
+                    tabs_forbidden: false,
                 },
                 // CSS
                 FileType {
@@ -249,6 +268,7 @@ impl FileTypeRegistry {
                         width: 2,
                     },
                     tabs_required: false,
+                    tabs_forbidden: false,
                 },
                 // SQL
                 FileType {
@@ -261,6 +281,7 @@ impl FileTypeRegistry {
                         width: 2,
                     },
                     tabs_required: false,
+                    tabs_forbidden: false,
                 },
                 // C# - 4 spaces
                 FileType {
@@ -273,6 +294,7 @@ impl FileTypeRegistry {
                         width: 4,
                     },
                     tabs_required: false,
+                    tabs_forbidden: false,
                 },
                 // Swift - 4 spaces
                 FileType {
@@ -285,6 +307,7 @@ impl FileTypeRegistry {
                         width: 4,
                     },
                     tabs_required: false,
+                    tabs_forbidden: false,
                 },
                 // Haskell - 2 spaces
                 FileType {
@@ -297,6 +320,7 @@ impl FileTypeRegistry {
                         width: 2,
                     },
                     tabs_required: false,
+                    tabs_forbidden: false,
                 },
                 // Assembly
                 FileType {
@@ -309,6 +333,7 @@ impl FileTypeRegistry {
                         width: 4,
                     },
                     tabs_required: false,
+                    tabs_forbidden: false,
                 },
                 // Kotlin - 4 spaces
                 FileType {
@@ -321,6 +346,7 @@ impl FileTypeRegistry {
                         width: 4,
                     },
                     tabs_required: false,
+                    tabs_forbidden: false,
                 },
                 // Scala - 2 spaces
                 FileType {
@@ -333,6 +359,7 @@ impl FileTypeRegistry {
                         width: 2,
                     },
                     tabs_required: false,
+                    tabs_forbidden: false,
                 },
                 // PHP - 4 spaces
                 FileType {
@@ -345,6 +372,7 @@ impl FileTypeRegistry {
                         width: 4,
                     },
                     tabs_required: false,
+                    tabs_forbidden: false,
                 },
                 // Perl - 4 spaces
                 FileType {
@@ -357,6 +385,7 @@ impl FileTypeRegistry {
                         width: 4,
                     },
                     tabs_required: false,
+                    tabs_forbidden: false,
                 },
                 // Lua - 2 spaces
                 FileType {
@@ -369,6 +398,7 @@ impl FileTypeRegistry {
                         width: 2,
                     },
                     tabs_required: false,
+                    tabs_forbidden: false,
                 },
                 // R - 2 spaces
                 FileType {
@@ -381,6 +411,7 @@ impl FileTypeRegistry {
                         width: 2,
                     },
                     tabs_required: false,
+                    tabs_forbidden: false,
                 },
                 // Elixir - 2 spaces
                 FileType {
@@ -393,6 +424,7 @@ impl FileTypeRegistry {
                         width: 2,
                     },
                     tabs_required: false,
+                    tabs_forbidden: false,
                 },
                 // Erlang - 4 spaces
                 FileType {
@@ -405,6 +437,7 @@ impl FileTypeRegistry {
                         width: 4,
                     },
                     tabs_required: false,
+                    tabs_forbidden: false,
                 },
                 // Clojure - 2 spaces
                 FileType {
@@ -417,6 +450,7 @@ impl FileTypeRegistry {
                         width: 2,
                     },
                     tabs_required: false,
+                    tabs_forbidden: false,
                 },
                 // F# - 4 spaces
                 FileType {
@@ -429,6 +463,7 @@ impl FileTypeRegistry {
                         width: 4,
                     },
                     tabs_required: false,
+                    tabs_forbidden: false,
                 },
                 // Objective-C - 4 spaces
                 FileType {
@@ -441,6 +476,7 @@ impl FileTypeRegistry {
                         width: 4,
                     },
                     tabs_required: false,
+                    tabs_forbidden: false,
                 },
                 // Groovy - 4 spaces
                 FileType {
@@ -453,6 +489,7 @@ impl FileTypeRegistry {
                         width: 4,
                     },
                     tabs_required: false,
+                    tabs_forbidden: false,
                 },
                 // Dart - 2 spaces
                 FileType {
@@ -465,6 +502,7 @@ impl FileTypeRegistry {
                         width: 2,
                     },
                     tabs_required: false,
+                    tabs_forbidden: false,
                 },
                 // Julia - 4 spaces
                 FileType {
@@ -477,6 +515,7 @@ impl FileTypeRegistry {
                         width: 4,
                     },
                     tabs_required: false,
+                    tabs_forbidden: false,
                 },
                 // Zig - 4 spaces
                 FileType {
@@ -489,6 +528,7 @@ impl FileTypeRegistry {
                         width: 4,
                     },
                     tabs_required: false,
+                    tabs_forbidden: false,
                 },
                 // Nim - 2 spaces
                 FileType {
@@ -501,6 +541,7 @@ impl FileTypeRegistry {
                         width: 2,
                     },
                     tabs_required: false,
+                    tabs_forbidden: false,
                 },
                 // Crystal - 2 spaces
                 FileType {
@@ -513,6 +554,7 @@ impl FileTypeRegistry {
                         width: 2,
                     },
                     tabs_required: false,
+                    tabs_forbidden: false,
                 },
                 // V - tabs
                 FileType {
@@ -525,6 +567,7 @@ impl FileTypeRegistry {
                         width: 4,
                     },
                     tabs_required: false,
+                    tabs_forbidden: false,
                 },
                 // OCaml - 2 spaces
                 FileType {
@@ -537,6 +580,7 @@ impl FileTypeRegistry {
                         width: 2,
                     },
                     tabs_required: false,
+                    tabs_forbidden: false,
                 },
                 // ReasonML - 2 spaces
                 FileType {
@@ -549,6 +593,7 @@ impl FileTypeRegistry {
                         width: 2,
                     },
                     tabs_required: false,
+                    tabs_forbidden: false,
                 },
                 // Solidity - 4 spaces
                 FileType {
@@ -561,6 +606,7 @@ impl FileTypeRegistry {
                         width: 4,
                     },
                     tabs_required: false,
+                    tabs_forbidden: false,
                 },
                 // Terraform/HCL - 2 spaces
                 FileType {
@@ -573,6 +619,7 @@ impl FileTypeRegistry {
                         width: 2,
                     },
                     tabs_required: false,
+                    tabs_forbidden: false,
                 },
                 // Protocol Buffers - 2 spaces
                 FileType {
@@ -585,6 +632,7 @@ impl FileTypeRegistry {
                         width: 2,
                     },
                     tabs_required: false,
+                    tabs_forbidden: false,
                 },
                 // GraphQL - 2 spaces
                 FileType {
@@ -597,6 +645,7 @@ impl FileTypeRegistry {
                         width: 2,
                     },
                     tabs_required: false,
+                    tabs_forbidden: false,
                 },
                 // Dockerfile
                 FileType {
@@ -609,6 +658,7 @@ impl FileTypeRegistry {
                         width: 4,
                     },
                     tabs_required: false,
+                    tabs_forbidden: false,
                 },
                 // Nix - 2 spaces
                 FileType {
@@ -621,6 +671,7 @@ impl FileTypeRegistry {
                         width: 2,
                     },
                     tabs_required: false,
+                    tabs_forbidden: false,
                 },
                 // Puppet - 2 spaces
                 FileType {
@@ -633,6 +684,7 @@ impl FileTypeRegistry {
                         width: 2,
                     },
                     tabs_required: false,
+                    tabs_forbidden: false,
                 },
                 // Ansible/Jinja templates
                 FileType {
@@ -645,6 +697,7 @@ impl FileTypeRegistry {
                         width: 2,
                     },
                     tabs_required: false,
+                    tabs_forbidden: false,
                 },
                 // JSONL/JSON Lines
                 FileType {
@@ -657,6 +710,7 @@ impl FileTypeRegistry {
                         width: 2,
                     },
                     tabs_required: false,
+                    tabs_forbidden: false,
                 },
                 // CSV/TSV
                 FileType {
@@ -669,6 +723,7 @@ impl FileTypeRegistry {
                         width: 2,
                     },
                     tabs_required: false,
+                    tabs_forbidden: false,
                 },
                 // INI/Config files
                 FileType {
@@ -681,6 +736,7 @@ impl FileTypeRegistry {
                         width: 2,
                     },
                     tabs_required: false,
+                    tabs_forbidden: false,
                 },
                 // Diff/Patch
                 FileType {
@@ -693,6 +749,7 @@ impl FileTypeRegistry {
                         width: 2,
                     },
                     tabs_required: false,
+                    tabs_forbidden: false,
                 },
                 // reStructuredText
                 FileType {
@@ -705,6 +762,7 @@ impl FileTypeRegistry {
                         width: 3,
                     },
                     tabs_required: false,
+                    tabs_forbidden: false,
                 },
                 // AsciiDoc
                 FileType {
@@ -717,6 +775,7 @@ impl FileTypeRegistry {
                         width: 2,
                     },
                     tabs_required: false,
+                    tabs_forbidden: false,
                 },
                 // LaTeX
                 FileType {
@@ -729,6 +788,7 @@ impl FileTypeRegistry {
                         width: 2,
                     },
                     tabs_required: false,
+                    tabs_forbidden: false,
                 },
                 // CMake
                 FileType {
@@ -741,6 +801,7 @@ impl FileTypeRegistry {
                         width: 2,
                     },
                     tabs_required: false,
+                    tabs_forbidden: false,
                 },
                 // Windows Registry files - CRLF required
                 FileType {
@@ -753,6 +814,7 @@ impl FileTypeRegistry {
                         width: 2,
                     },
                     tabs_required: false,
+                    tabs_forbidden: false,
                 },
                 // Windows INF files - CRLF
                 FileType {
@@ -765,6 +827,7 @@ impl FileTypeRegistry {
                         width: 2,
                     },
                     tabs_required: false,
+                    tabs_forbidden: false,
                 },
                 // Visual Basic - CRLF
                 FileType {
@@ -777,6 +840,7 @@ impl FileTypeRegistry {
                         width: 4,
                     },
                     tabs_required: false,
+                    tabs_forbidden: false,
                 },
                 // macOS Property List (XML-based)
                 FileType {
@@ -789,6 +853,7 @@ impl FileTypeRegistry {
                         width: 4,
                     },
                     tabs_required: false,
+                    tabs_forbidden: false,
                 },
                 // macOS/iOS Storyboard and XIB files
                 FileType {
@@ -801,6 +866,7 @@ impl FileTypeRegistry {
                         width: 4,
                     },
                     tabs_required: false,
+                    tabs_forbidden: false,
                 },
                 // macOS Entitlements
                 FileType {
@@ -813,6 +879,7 @@ impl FileTypeRegistry {
                         width: 4,
                     },
                     tabs_required: false,
+                    tabs_forbidden: false,
                 },
                 // AppleScript
                 FileType {
@@ -825,6 +892,7 @@ impl FileTypeRegistry {
                         width: 4,
                     },
                     tabs_required: false,
+                    tabs_forbidden: false,
                 },
                 // Plain text
                 FileType {
@@ -837,6 +905,7 @@ impl FileTypeRegistry {
                         width: 2,
                     },
                     tabs_required: false,
+                    tabs_forbidden: false,
                 },
             ],
         }
@@ -914,6 +983,8 @@ pub struct FileType {
     pub default_indent: IndentConfig,
     /// Whether tabs are strictly required (like Makefiles)
     pub tabs_required: bool,
+    /// Whether tabs are forbidden (like YAML, Python)
+    pub tabs_forbidden: bool,
 }
 
 #[cfg(test)]

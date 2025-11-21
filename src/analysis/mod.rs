@@ -36,6 +36,8 @@ pub enum Issue {
     },
     /// Tabs used in file that requires tabs but found spaces in indentation
     TabsRequired,
+    /// Tabs used in file where tabs are forbidden (YAML, Python)
+    TabsForbidden,
     /// Non-UTF8 encoding detected
     NonUtf8Encoding { detected: String },
     /// UTF-8 BOM present
@@ -67,6 +69,7 @@ impl Issue {
                 format!("Wrong indentation (expected {expected:?}, found {found:?})")
             }
             Issue::TabsRequired => "Tabs required but spaces found".to_string(),
+            Issue::TabsForbidden => "Tabs forbidden but tabs found in indentation".to_string(),
             Issue::NonUtf8Encoding { detected } => {
                 format!("Non-UTF8 encoding detected: {detected}")
             }
@@ -149,14 +152,32 @@ impl<'a> Analyzer<'a> {
     fn get_settings(&self, path: &Path) -> FileSettings {
         let mut settings = self.config.settings_for_file(path);
 
-        // Apply file type defaults if no explicit config
+        // Apply file type defaults if no explicit config override exists
         if let Some(file_type) = self.registry.detect(path) {
+            // Apply line ending default when set to Auto
             if settings.line_ending == LineEnding::Auto {
                 settings.line_ending = file_type.default_line_ending;
+            }
+
+            // Apply indentation default if no explicit per-file rule matched
+            // We check if the settings still match the global defaults
+            if !self.has_indent_override_for_path(path) {
+                settings.indent = file_type.default_indent.clone();
             }
         }
 
         settings
+    }
+
+    /// Check if there's an explicit indent override rule for this path
+    fn has_indent_override_for_path(&self, path: &Path) -> bool {
+        let path_str = path.to_string_lossy();
+        for rule in &self.config.rules {
+            if rule.indent.is_some() && rule.matches(&path_str) {
+                return true;
+            }
+        }
+        false
     }
 }
 

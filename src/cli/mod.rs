@@ -44,6 +44,10 @@ pub struct Cli {
     #[arg(long, global = true)]
     pub no_gitignore: bool,
 
+    /// Don't read .editorconfig files
+    #[arg(long, global = true)]
+    pub no_editorconfig: bool,
+
     /// Don't skip hidden files
     #[arg(long, global = true)]
     pub no_hidden: bool,
