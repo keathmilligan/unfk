@@ -4,7 +4,7 @@
   <img src="unfk-lt.png" alt="OpenCode logo">
 </picture>
 
-<p align="center">A fast, modern CLI tool for scanning and repairing file formatting issues</p>
+A fast, modern CLI tool for scanning and repairing file formatting issues
 
 ---
 
