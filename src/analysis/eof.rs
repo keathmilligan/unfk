@@ -58,6 +58,21 @@ impl<'a> EofAnalyzer<'a> {
             }
         }
 
+        // Check for successive blank lines in markdown files
+        let is_markdown = self
+            .file_type
+            .map(|ft| ft.name == "markdown")
+            .unwrap_or(false);
+
+        if is_markdown {
+            let successive_blank_lines = self.count_successive_blank_lines(content);
+            if successive_blank_lines > 0 {
+                issues.push(Issue::SuccessiveBlankLines {
+                    occurrences: successive_blank_lines,
+                });
+            }
+        }
+
         issues
     }
 
@@ -114,12 +129,54 @@ impl<'a> EofAnalyzer<'a> {
 
         true
     }
+
+    fn count_successive_blank_lines(&self, content: &[u8]) -> usize {
+        let text = match std::str::from_utf8(content) {
+            Ok(s) => s,
+            Err(_) => return 0,
+        };
+
+        let lines: Vec<&str> = text.lines().collect();
+        let mut occurrences = 0;
+        let mut consecutive_blank = 0;
+
+        // Don't count trailing blank lines (they're handled separately)
+        let non_trailing_lines = {
+            let mut end_idx = lines.len();
+            for line in lines.iter().rev() {
+                if line.trim().is_empty() {
+                    end_idx -= 1;
+                } else {
+                    break;
+                }
+            }
+            end_idx
+        };
+
+        for i in 0..non_trailing_lines {
+            if lines[i].trim().is_empty() {
+                consecutive_blank += 1;
+            } else {
+                if consecutive_blank >= 2 {
+                    occurrences += 1;
+                }
+                consecutive_blank = 0;
+            }
+        }
+
+        // Check if we ended on a sequence of blank lines (but not trailing)
+        if consecutive_blank >= 2 {
+            occurrences += 1;
+        }
+
+        occurrences
+    }
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::config::{IndentConfig, LineEnding};
+    use crate::config::{IndentConfig, IndentStyle, LineEnding};
 
     fn default_settings() -> FileSettings {
         FileSettings {
@@ -128,6 +185,21 @@ mod tests {
             final_newline: true,
             trailing_whitespace: TrailingWhitespace::Remove,
             encoding: "utf-8".to_string(),
+        }
+    }
+
+    fn markdown_filetype() -> FileType {
+        FileType {
+            name: "markdown".to_string(),
+            extensions: vec!["md"],
+            shebangs: vec![],
+            default_line_ending: LineEnding::Lf,
+            default_indent: IndentConfig {
+                style: IndentStyle::Spaces,
+                width: 2,
+            },
+            tabs_required: false,
+            tabs_forbidden: false,
         }
     }
 
@@ -174,5 +246,74 @@ mod tests {
         assert!(issues
             .iter()
             .any(|i| matches!(i, Issue::TrailingWhitespace { line_count: 2 })));
+    }
+
+    #[test]
+    fn test_successive_blank_lines_single_allowed() {
+        let settings = default_settings();
+        let markdown_type = markdown_filetype();
+        let analyzer = EofAnalyzer::new(&settings, Some(&markdown_type));
+
+        let content = b"line1\n\nline2\n";
+        let issues = analyzer.analyze(content);
+        assert!(!issues
+            .iter()
+            .any(|i| matches!(i, Issue::SuccessiveBlankLines { .. })));
+    }
+
+    #[test]
+    fn test_successive_blank_lines_multiple_detected() {
+        let settings = default_settings();
+        let markdown_type = markdown_filetype();
+        let analyzer = EofAnalyzer::new(&settings, Some(&markdown_type));
+
+        let content = b"line1\n\n\nline2\n";
+        let issues = analyzer.analyze(content);
+        assert!(issues
+            .iter()
+            .any(|i| matches!(i, Issue::SuccessiveBlankLines { occurrences: 1 })));
+    }
+
+    #[test]
+    fn test_successive_blank_lines_multiple_occurrences() {
+        let settings = default_settings();
+        let markdown_type = markdown_filetype();
+        let analyzer = EofAnalyzer::new(&settings, Some(&markdown_type));
+
+        let content = b"line1\n\n\nline2\n\n\n\nline3\n";
+        let issues = analyzer.analyze(content);
+        assert!(issues
+            .iter()
+            .any(|i| matches!(i, Issue::SuccessiveBlankLines { occurrences: 2 })));
+    }
+
+    #[test]
+    fn test_successive_blank_lines_non_markdown_ignored() {
+        let settings = default_settings();
+        let analyzer = EofAnalyzer::new(&settings, None);
+
+        let content = b"line1\n\n\nline2\n";
+        let issues = analyzer.analyze(content);
+        assert!(!issues
+            .iter()
+            .any(|i| matches!(i, Issue::SuccessiveBlankLines { .. })));
+    }
+
+    #[test]
+    fn test_successive_blank_lines_trailing_not_counted() {
+        let settings = default_settings();
+        let markdown_type = markdown_filetype();
+        let analyzer = EofAnalyzer::new(&settings, Some(&markdown_type));
+
+        // Multiple blank lines at EOF should not be counted as successive blank lines
+        let content = b"line1\nline2\n\n\n\n";
+        let issues = analyzer.analyze(content);
+        // Should have trailing blank lines issue but not successive blank lines
+        assert!(issues
+            .iter()
+            .any(|i| matches!(i, Issue::ExcessiveTrailingBlankLines { .. })));
+        assert!(!issues
+            .iter()
+            .any(|i| matches!(i, Issue::SuccessiveBlankLines { .. })));
     }
 }

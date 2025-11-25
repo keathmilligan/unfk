@@ -50,6 +50,8 @@ pub enum Issue {
     ExcessiveTrailingBlankLines { count: usize },
     /// Trailing whitespace on lines
     TrailingWhitespace { line_count: usize },
+    /// Multiple successive blank lines in markdown
+    SuccessiveBlankLines { occurrences: usize },
 }
 
 impl Issue {
@@ -62,6 +64,7 @@ impl Issue {
             Issue::InvalidUtf8 { .. } => false,
             Issue::MissingFinalNewline => false,
             Issue::TrailingWhitespace { .. } => false,
+            Issue::SuccessiveBlankLines { .. } => false,
             // All other issues can be fixed (errors)
             _ => true,
         }
@@ -97,6 +100,9 @@ impl Issue {
             }
             Issue::TrailingWhitespace { line_count } => {
                 format!("Trailing whitespace on {line_count} lines")
+            }
+            Issue::SuccessiveBlankLines { occurrences } => {
+                format!("Multiple successive blank lines (found {occurrences} occurrences)")
             }
         }
     }
@@ -265,6 +271,7 @@ mod tests {
             },
             Issue::MissingFinalNewline,
             Issue::TrailingWhitespace { line_count: 5 },
+            Issue::SuccessiveBlankLines { occurrences: 3 },
         ];
 
         for issue in unfixable_issues {

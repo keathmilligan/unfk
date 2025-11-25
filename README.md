@@ -19,6 +19,7 @@ A fast, modern CLI tool for scanning and repairing file formatting issues
 - **Encoding** — non-UTF-8 files or encoding mismatches
 - **Final newlines** — missing or extra newlines at end of file
 - **Trailing whitespace** — spaces/tabs at end of lines
+- **Blank lines (Markdown)** — multiple successive blank lines in `.md` files
 
 Unlike code formatters such as Prettier or Black, `unfk` is not concerned with code style or syntax. Instead, it focuses on low-level file hygiene issues that affect a much broader range of file types—config files, scripts, data files, documentation, and more.
 
@@ -30,6 +31,23 @@ Unlike code formatters such as Prettier or Black, `unfk` is not concerned with c
 - `.vb` and `.reg` files expect CRLF
 
 This means you can run `unfk fix` across a mixed codebase and trust it to do the right thing for each file type.
+
+### Markdown-Specific Features
+
+For markdown files (`.md`), `unfk` includes additional checks:
+
+- **Successive blank lines**: Detects and optionally fixes multiple consecutive blank lines (double-spacing or more)
+- Single blank lines between paragraphs are preserved (standard markdown practice)
+- Two trailing spaces (markdown line breaks) are preserved by default
+
+Example:
+```bash
+# Scan for issues including successive blank lines
+unfk scan document.md
+
+# Fix all issues including successive blank lines
+unfk fix --all document.md
+```
 
 ## Installation
 
@@ -139,4 +157,3 @@ unfk fix --line-ending lf --dry-run
 ## License
 
 MIT
-

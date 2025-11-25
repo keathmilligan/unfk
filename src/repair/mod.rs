@@ -65,6 +65,16 @@ impl<'a> Repairer<'a> {
             }
         }
 
+        // Remove successive blank lines in markdown
+        for issue in issues {
+            if matches!(issue, Issue::SuccessiveBlankLines { .. }) {
+                let is_markdown = file_type.map(|ft| ft.name == "markdown").unwrap_or(false);
+                if is_markdown {
+                    lines = self.remove_successive_blank_lines(lines);
+                }
+            }
+        }
+
         // Fix indentation
         for issue in issues {
             match issue {
@@ -189,6 +199,26 @@ impl<'a> Repairer<'a> {
         format!("{}{}", trimmed, line_ending)
     }
 
+    fn remove_successive_blank_lines(&self, lines: Vec<String>) -> Vec<String> {
+        let mut result = Vec::new();
+        let mut consecutive_blank = 0;
+
+        for line in lines {
+            if line.trim().is_empty() {
+                consecutive_blank += 1;
+                // Allow one blank line, skip additional ones
+                if consecutive_blank <= 1 {
+                    result.push(line);
+                }
+            } else {
+                consecutive_blank = 0;
+                result.push(line);
+            }
+        }
+
+        result
+    }
+
     fn write_atomic(&self, path: &Path, content: &[u8]) -> Result<()> {
         let parent = path.parent().unwrap_or(Path::new("."));
         let mut temp_file = tempfile::NamedTempFile::new_in(parent)
@@ -292,5 +322,86 @@ mod tests {
         let content = std::fs::read_to_string(&file_path).unwrap();
         assert!(!content.contains("   "), "Trailing whitespace should be removed");
         assert!(content.ends_with('\n'), "Final newline should be preserved after repair");
+    }
+
+    #[test]
+    fn test_remove_successive_blank_lines() {
+        let config = create_config();
+        let repairer = Repairer::new(&config);
+
+        let lines = vec![
+            "line1".to_string(),
+            "".to_string(),
+            "".to_string(),
+            "".to_string(),
+            "line2".to_string(),
+        ];
+
+        let result = repairer.remove_successive_blank_lines(lines);
+        assert_eq!(result.len(), 3);
+        assert_eq!(result[0], "line1");
+        assert_eq!(result[1], "");
+        assert_eq!(result[2], "line2");
+    }
+
+    #[test]
+    fn test_remove_successive_blank_lines_multiple_sequences() {
+        let config = create_config();
+        let repairer = Repairer::new(&config);
+
+        let lines = vec![
+            "line1".to_string(),
+            "".to_string(),
+            "".to_string(),
+            "line2".to_string(),
+            "".to_string(),
+            "".to_string(),
+            "".to_string(),
+            "line3".to_string(),
+        ];
+
+        let result = repairer.remove_successive_blank_lines(lines);
+        assert_eq!(result.len(), 5);
+        assert_eq!(result[0], "line1");
+        assert_eq!(result[1], "");
+        assert_eq!(result[2], "line2");
+        assert_eq!(result[3], "");
+        assert_eq!(result[4], "line3");
+    }
+
+    #[test]
+    fn test_remove_successive_blank_lines_preserves_single() {
+        let config = create_config();
+        let repairer = Repairer::new(&config);
+
+        let lines = vec![
+            "line1".to_string(),
+            "".to_string(),
+            "line2".to_string(),
+        ];
+
+        let result = repairer.remove_successive_blank_lines(lines.clone());
+        assert_eq!(result.len(), 3);
+        assert_eq!(result, lines);
+    }
+
+    #[test]
+    fn test_repair_successive_blank_lines_in_markdown() {
+        let config = create_config();
+        let repairer = Repairer::new(&config);
+
+        let temp_dir = tempfile::tempdir().unwrap();
+        let file_path = temp_dir.path().join("test.md");
+
+        {
+            let mut file = std::fs::File::create(&file_path).unwrap();
+            write!(file, "line1\n\n\n\nline2\n").unwrap();
+        }
+
+        let issues = vec![Issue::SuccessiveBlankLines { occurrences: 1 }];
+        repairer.repair(&file_path, &issues).unwrap();
+
+        let content = std::fs::read_to_string(&file_path).unwrap();
+        assert_eq!(content, "line1\n\nline2\n");
     }
 }
