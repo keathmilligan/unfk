@@ -1,0 +1,32 @@
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+
+jobs:
+  release:
+    uses: keathmilligan/release-infra/.github/workflows/release.yml@main
+    with:
+      project-name: unfk
+      binary-name: unfk
+      project-type: rust
+      bundle-id: dev.keathmilligan.unfk
+      targets: >-
+        x86_64-apple-darwin,
+        aarch64-apple-darwin,
+        x86_64-pc-windows-msvc,
+        aarch64-pc-windows-msvc,
+        x86_64-unknown-linux-gnu,
+        aarch64-unknown-linux-gnu,
+        x86_64-unknown-linux-musl
+      enable-homebrew: true
+      enable-scoop: true
+      enable-chocolatey: true
+      enable-winget: false
+      enable-apt: true
+      enable-rpm: true
+      enable-apk: false
+      enable-dmg: false
+      enable-aur: true
+    secrets: inherit

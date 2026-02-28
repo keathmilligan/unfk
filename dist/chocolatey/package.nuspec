@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2015/06/nuspec.xsd">
+  <metadata>
+    <id>unfk</id>
+    <version>1.1.0</version>
+    <title>unfk</title>
+    <authors>Keath Milligan</authors>
+    <projectUrl>https://github.com/keathmilligan/unfk</projectUrl>
+    <licenseUrl>https://github.com/keathmilligan/unfk/blob/master/LICENSE</licenseUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>A fast, modern CLI tool for scanning and repairing file formatting issues including line endings, indentation, encoding, and trailing whitespace.</description>
+    <tags>cli formatting line-endings indentation encoding development-tools</tags>
+    <packageSourceUrl>https://github.com/keathmilligan/unfk</packageSourceUrl>
+  </metadata>
+</package>

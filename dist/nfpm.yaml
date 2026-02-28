@@ -1,0 +1,11 @@
+name: unfk
+arch: ${GOARCH}
+platform: linux
+version: ${VERSION}
+maintainer: Keath Milligan <keath@keathmilligan.net>
+description: A fast, modern CLI tool for scanning and repairing file formatting issues
+homepage: https://github.com/keathmilligan/unfk
+license: MIT
+contents:
+  - src: ./unfk
+    dst: /usr/bin/unfk
