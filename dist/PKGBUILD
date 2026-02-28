@@ -1,4 +1,4 @@
-# Maintainer: Keath Milligan <keath@keathmilligan.net>
+# Maintainer: ${MAINTAINER}
 pkgname=unfk-bin
 pkgver=1.1.0
 pkgrel=1
