@@ -1,15 +1,19 @@
 $ErrorActionPreference = 'Stop'
 
-$packageName = 'unfk'
-$url = 'https://github.com/keathmilligan/unfk/releases/download/v1.1.0/unfk-1.1.0-x86_64.msi'
+$version  = '__VERSION__'
+$repo     = 'keathmilligan/unfk'
+$msiName  = "unfk-${version}-x86_64.msi"
+$url      = "https://github.com/${repo}/releases/download/v${version}/${msiName}"
+$checksum = '__SHA256_MSI__'
 
 $packageArgs = @{
-  packageName    = $packageName
-  fileType       = 'msi'
+  packageName    = 'unfk'
+  fileType       = 'MSI'
   url64bit       = $url
-  softwareName   = 'unfk*'
+  checksum64     = $checksum
+  checksumType64 = 'sha256'
   silentArgs     = '/qn /norestart'
-  validExitCodes = @(0, 3010, 1641)
+  validExitCodes = @(0, 3010)
 }
 
 Install-ChocolateyPackage @packageArgs

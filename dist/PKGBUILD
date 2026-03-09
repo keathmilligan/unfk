@@ -1,6 +1,6 @@
-# Maintainer: ${MAINTAINER}
+# Maintainer: ${MAINTAINER_NAME} <${MAINTAINER_EMAIL}>
 pkgname=unfk-bin
-pkgver=1.1.0
+pkgver=${VERSION}
 pkgrel=1
 pkgdesc='A fast, modern CLI tool for scanning and repairing file formatting issues'
 arch=('x86_64' 'aarch64')

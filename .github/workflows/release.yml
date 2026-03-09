@@ -6,12 +6,12 @@ on:
 
 jobs:
   release:
-    uses: keathmilligan/release-infra/.github/workflows/release.yml@main
+    uses: keathmilligan/release-infra/.github/workflows/release.yml@master
     with:
       project-name: unfk
       binary-name: unfk
       project-type: rust
-      bundle-id: dev.keathmilligan.unfk
+      bundle-id: net.keathmilligan.unfk
       targets: >-
         x86_64-apple-darwin,
         aarch64-apple-darwin,
@@ -19,17 +19,19 @@ jobs:
         aarch64-pc-windows-msvc,
         x86_64-unknown-linux-gnu,
         aarch64-unknown-linux-gnu,
-        x86_64-unknown-linux-musl
+        x86_64-unknown-linux-musl,
+        aarch64-unknown-linux-musl
       tap-repo: keathmilligan/homebrew-tap
       bucket-repo: keathmilligan/scoop-bucket
       packages-repo: keathmilligan/packages
-      enable-homebrew: true
-      enable-scoop: true
-      enable-chocolatey: true
+      enable-install-scripts: true
+      enable-homebrew: false
+      enable-scoop: false
+      enable-chocolatey: false
       enable-winget: false
-      enable-apt: true
-      enable-rpm: true
+      enable-apt: false
+      enable-rpm: false
       enable-apk: false
       enable-dmg: false
-      enable-aur: true
+      enable-aur: false
     secrets: inherit

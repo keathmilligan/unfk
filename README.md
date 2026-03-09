@@ -51,8 +51,74 @@ unfk fix --all document.md
 
 ## Installation
 
+### cargo
+
 ```bash
 cargo install unfk
+```
+
+### Shell installer (macOS / Linux)
+
+```bash
+curl -fsSL https://install.keathmilligan.dev/unfk/install.sh | sh
+```
+
+### PowerShell installer (Windows)
+
+```powershell
+irm https://install.keathmilligan.dev/unfk/install.ps1 | iex
+```
+
+### Windows MSI
+
+Download the signed `.msi` installer directly from the [GitHub Releases](https://github.com/keathmilligan/unfk/releases) page.
+
+### Homebrew (macOS / Linux)
+
+```bash
+brew tap keathmilligan/tap
+brew install keathmilligan/tap/unfk
+```
+
+### Scoop (Windows)
+
+```powershell
+scoop bucket add keathmilligan https://github.com/keathmilligan/scoop-bucket
+scoop install unfk
+```
+
+### Chocolatey (Windows)
+
+```powershell
+choco install unfk
+```
+
+### winget (Windows)
+
+```powershell
+winget install keathmilligan.unfk
+```
+
+### apt (Debian / Ubuntu)
+
+```bash
+curl -fsSL https://install.keathmilligan.dev/gpg.key | sudo gpg --dearmor -o /etc/apt/keyrings/keathmilligan.gpg
+echo "deb [signed-by=/etc/apt/keyrings/keathmilligan.gpg] https://install.keathmilligan.dev/apt stable main" | sudo tee /etc/apt/sources.list.d/keathmilligan.list
+sudo apt update
+sudo apt install unfk
+```
+
+### dnf / rpm (Fedora / RHEL / CentOS)
+
+```bash
+sudo curl -o /etc/yum.repos.d/keathmilligan.repo https://install.keathmilligan.dev/rpm/keathmilligan.repo
+sudo dnf install unfk
+```
+
+### AUR (Arch Linux)
+
+```bash
+yay -S unfk-bin
 ```
 
 ## Quick Start

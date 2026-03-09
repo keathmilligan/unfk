@@ -1,82 +1,105 @@
-<?xml version="1.0" encoding="windows-1252"?>
+<?xml version='1.0' encoding='windows-1252'?>
 <!--
-  WiX configuration for unfk MSI installer.
-  Used by cargo-wix during the release pipeline.
+  WiX3 installer source for unfk.
+  Built by: cargo wix --no-build --install-version <VERSION> -o unfk-<VERSION>-x86_64.msi
+  Requires: cargo-wix, WiX Toolset v3
 -->
-<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+<Wix xmlns='http://schemas.microsoft.com/wix/2006/wi'>
   <Product
-    Id="*"
-    Name="unfk"
-    UpgradeCode="B1E5C4A2-3D7F-4E8B-9A6C-2F1D0E3B5A8C"
-    Manufacturer="Keath Milligan"
-    Language="1033"
-    Codepage="1252"
-    Version="!(bind.FileVersion.unfkExe)">
+    Id='*'
+    Name='unfk'
+    UpgradeCode='B3F2A1D4-7C8E-4F9B-A2D5-6E3C8B1F4A7D'
+    Manufacturer='Keath Milligan'
+    Language='1033'
+    Codepage='1252'
+    Version='$(var.Version)'>
 
-    <Package
-      Id="*"
-      Keywords="Installer"
-      Description="unfk - File formatting scanner and repair tool"
-      Manufacturer="Keath Milligan"
-      InstallerVersion="450"
-      Languages="1033"
-      Compressed="yes"
-      InstallScope="perMachine"
-      SummaryCodepage="1252" />
+    <Package Id='*'
+      Keywords='Installer'
+      Description='A fast, modern CLI tool for scanning and repairing file formatting issues'
+      Manufacturer='Keath Milligan'
+      InstallerVersion='450'
+      Languages='1033'
+      Compressed='yes'
+      SummaryCodepage='1252'/>
 
     <MajorUpgrade
-      Schedule="afterInstallInitialize"
-      DowngradeErrorMessage="A newer version of [ProductName] is already installed. Setup will now exit." />
+      Schedule='afterInstallInitialize'
+      DowngradeErrorMessage='A newer version of [ProductName] is already installed. Setup will now exit.'/>
 
-    <Media Id="1" Cabinet="media1.cab" EmbedCab="yes" DiskPrompt="CD-ROM #1" />
-    <Property Id="DiskPrompt" Value="unfk Installation" />
+    <Media Id='1' Cabinet='media1.cab' EmbedCab='yes' DiskPrompt='CD-ROM #1'/>
+    <Property Id='DiskPrompt' Value='unfk Installation'/>
 
-    <Directory Id="TARGETDIR" Name="SourceDir">
-      <Directory Id="ProgramFiles64Folder" Name="PFiles">
-        <Directory Id="APPLICATIONFOLDER" Name="unfk">
-          <Component Id="unfkBinary" Guid="*" Win64="yes">
-            <File
-              Id="unfkExe"
-              Name="unfk.exe"
-              DiskId="1"
-              Source="target\release\unfk.exe"
-              KeyPath="yes" />
-
-            <Environment
-              Id="PATH"
-              Name="PATH"
-              Value="[APPLICATIONFOLDER]"
-              Permanent="no"
-              Part="last"
-              Action="set"
-              System="yes" />
-          </Component>
-        </Directory>
+    <!-- ═══════════════════════════════════════════════════════════════
+         Directory structure
+    ════════════════════════════════════════════════════════════════ -->
+    <Directory Id='TARGETDIR' Name='SourceDir'>
+      <Directory Id='ProgramFiles64Folder'>
+        <Directory Id='APPLICATIONROOTDIRECTORY' Name='unfk'/>
       </Directory>
     </Directory>
 
+    <!-- ═══════════════════════════════════════════════════════════════
+         Components
+    ════════════════════════════════════════════════════════════════ -->
+    <DirectoryRef Id='APPLICATIONROOTDIRECTORY'>
+      <Component Id='binary0' Guid='A1B2C3D4-E5F6-7890-ABCD-EF1234567890'>
+        <File
+          Id='exe0'
+          Name='unfk.exe'
+          DiskId='1'
+          Source='$(var.CargoTargetBinDir)\unfk.exe'
+          KeyPath='yes'/>
+      </Component>
+
+      <!-- Add install directory to system PATH -->
+      <Component Id='PathComponent' Guid='F9E8D7C6-B5A4-3210-FEDC-BA9876543210'>
+        <Environment
+          Id='PATH'
+          Name='PATH'
+          Value='[APPLICATIONROOTDIRECTORY]'
+          Permanent='no'
+          Part='last'
+          Action='set'
+          System='yes'/>
+        <RegistryValue
+          Root='HKCU'
+          Key='Software\unfk'
+          Name='installed'
+          Type='integer'
+          Value='1'
+          KeyPath='yes'/>
+      </Component>
+    </DirectoryRef>
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         Feature
+    ════════════════════════════════════════════════════════════════ -->
     <Feature
-      Id="Binaries"
-      Title="Application"
-      Description="Installs the unfk binary."
-      Level="1"
-      ConfigurableDirectory="APPLICATIONFOLDER"
-      AllowAdvertise="no"
-      Display="expand"
-      Absent="disallow">
-      <ComponentRef Id="unfkBinary" />
+      Id='MainProgram'
+      Title='unfk'
+      Description='Installs unfk CLI.'
+      Display='expand'
+      Level='1'
+      ConfigurableDirectory='APPLICATIONROOTDIRECTORY'>
+      <ComponentRef Id='binary0'/>
+      <ComponentRef Id='PathComponent'/>
     </Feature>
 
-    <SetProperty Id="ARPINSTALLLOCATION" Value="[APPLICATIONFOLDER]" After="CostFinalize" />
+    <!-- ═══════════════════════════════════════════════════════════════
+         UI
+    ════════════════════════════════════════════════════════════════ -->
+    <UIRef Id='WixUI_FeatureTree'/>
+    <UIRef Id='WixUI_ErrorProgressText'/>
+    <WixVariable Id='WixUILicenseRtf' Value='wix\License.rtf'/>
 
-    <Icon Id="ProductICO" SourceFile="wix\unfk.ico" />
-    <Property Id="ARPPRODUCTICON" Value="ProductICO" />
-    <Property Id="ARPHELPLINK" Value="https://github.com/keathmilligan/unfk" />
+    <!-- ═══════════════════════════════════════════════════════════════
+         Add/Remove Programs metadata
+    ════════════════════════════════════════════════════════════════ -->
+    <Property Id='ARPHELPLINK' Value='https://github.com/keathmilligan/unfk'/>
+    <Property Id='ARPURLINFOABOUT' Value='https://github.com/keathmilligan/unfk'/>
+    <Property Id='ARPURLUPDATEINFO' Value='https://github.com/keathmilligan/unfk/releases'/>
+    <Property Id='ARPNOREPAIR' Value='1' Secure='yes'/>
 
-    <UI>
-      <UIRef Id="WixUI_FeatureTree" />
-    </UI>
-
-    <WixVariable Id="WixUILicenseRtf" Value="wix\License.rtf" />
   </Product>
 </Wix>

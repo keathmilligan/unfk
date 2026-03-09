@@ -12,4 +12,7 @@
     <tags>cli formatting line-endings indentation encoding development-tools</tags>
     <packageSourceUrl>https://github.com/keathmilligan/unfk</packageSourceUrl>
   </metadata>
+  <files>
+    <file src="tools\**" target="tools" />
+  </files>
 </package>
