@@ -159,7 +159,7 @@ cargo update -p unfk --precise "$NEW_VERSION" 2>/dev/null \
 # ---------------------------------------------------------------------------
 
 echo "Committing version bump..."
-git add Cargo.toml Cargo.lock
+git add Cargo.toml
 git commit -m "chore: bump version to ${NEW_VERSION}"
 
 echo "Pushing commits to origin/master..."
