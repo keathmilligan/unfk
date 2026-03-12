@@ -137,33 +137,39 @@ fi
 # Update Cargo.toml
 # ---------------------------------------------------------------------------
 
-echo "Updating Cargo.toml..."
-# Replace the version line in the [package] section only (first occurrence).
-sed -i "0,/^version = \"[^\"]*\"/{s/^version = \"[^\"]*\"/version = \"${NEW_VERSION}\"/}" "$CARGO_TOML"
+CURRENT_CARGO_VERSION=$(grep -m1 '^version = ' "$CARGO_TOML" | grep -oP '"\K[^"]+(?=")')
 
-# Verify the replacement.
-UPDATED=$(grep -m1 '^version = ' "$CARGO_TOML" | grep -oP '"\K[^"]+(?=")')
-[[ "$UPDATED" == "$NEW_VERSION" ]] \
-    || die "Failed to update version in Cargo.toml (got '$UPDATED')."
+if [[ "$CURRENT_CARGO_VERSION" == "$NEW_VERSION" ]]; then
+    echo "Cargo.toml is already at $NEW_VERSION — skipping version bump commit."
+else
+    echo "Updating Cargo.toml..."
+    # Replace the version line in the [package] section only (first occurrence).
+    sed -i "0,/^version = \"[^\"]*\"/{s/^version = \"[^\"]*\"/version = \"${NEW_VERSION}\"/}" "$CARGO_TOML"
 
-# ---------------------------------------------------------------------------
-# Update Cargo.lock
-# ---------------------------------------------------------------------------
+    # Verify the replacement.
+    UPDATED=$(grep -m1 '^version = ' "$CARGO_TOML" | grep -oP '"\K[^"]+(?=")')
+    [[ "$UPDATED" == "$NEW_VERSION" ]] \
+        || die "Failed to update version in Cargo.toml (got '$UPDATED')."
 
-echo "Updating Cargo.lock..."
-cargo update -p unfk --precise "$NEW_VERSION" 2>/dev/null \
-    || cargo generate-lockfile
+    # ---------------------------------------------------------------------------
+    # Update Cargo.lock
+    # ---------------------------------------------------------------------------
 
-# ---------------------------------------------------------------------------
-# Commit and push
-# ---------------------------------------------------------------------------
+    echo "Updating Cargo.lock..."
+    cargo update -p unfk --precise "$NEW_VERSION" 2>/dev/null \
+        || cargo generate-lockfile
 
-echo "Committing version bump..."
-git add Cargo.toml
-git commit -m "chore: bump version to ${NEW_VERSION}"
+    # ---------------------------------------------------------------------------
+    # Commit and push
+    # ---------------------------------------------------------------------------
 
-echo "Pushing commits to origin/master..."
-git push origin master
+    echo "Committing version bump..."
+    git add Cargo.toml
+    git commit -m "chore: bump version to ${NEW_VERSION}"
+
+    echo "Pushing commits to origin/master..."
+    git push origin master
+fi
 
 # ---------------------------------------------------------------------------
 # Tag and push tag (triggers release workflow)
