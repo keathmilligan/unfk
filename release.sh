@@ -127,10 +127,22 @@ if [[ "$CURRENT_BRANCH" != "master" ]]; then
     die "Not on master (current branch: '$CURRENT_BRANCH'). Checkout master before releasing."
 fi
 
-# Guard: tag must not already exist.
+# Guard: tag must not already exist locally, unless it is also on the remote
+# (indicating a previous workflow run failed and we need to retry).
 TAG="v${NEW_VERSION}"
-if git rev-parse "$TAG" &>/dev/null; then
-    die "Tag '$TAG' already exists."
+TAG_EXISTS_LOCALLY=false
+TAG_EXISTS_REMOTE=false
+git rev-parse "$TAG" &>/dev/null && TAG_EXISTS_LOCALLY=true
+git ls-remote --exit-code --tags origin "$TAG" &>/dev/null && TAG_EXISTS_REMOTE=true
+
+if $TAG_EXISTS_LOCALLY && ! $TAG_EXISTS_REMOTE; then
+    die "Tag '$TAG' exists locally but not on remote. Delete it with 'git tag -d $TAG' and retry."
+fi
+
+if $TAG_EXISTS_LOCALLY && $TAG_EXISTS_REMOTE; then
+    echo "Tag '$TAG' already exists on remote — re-pushing to retry the release workflow..."
+    git tag -d "$TAG"
+    git push origin ":refs/tags/$TAG"
 fi
 
 # ---------------------------------------------------------------------------
