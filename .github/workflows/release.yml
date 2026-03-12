@@ -4,6 +4,9 @@ on:
   push:
     tags: ["v*"]
 
+permissions:
+  contents: write
+
 jobs:
   release:
     uses: keathmilligan/release-infra/.github/workflows/release.yml@master
