@@ -148,19 +148,16 @@ if $TAG_EXISTS_LOCALLY && $TAG_EXISTS_REMOTE; then
         die "Cargo.toml version ($CURRENT_CARGO_VERSION) does not match tag ($NEW_VERSION)."
     fi
 
-    # Move the tag to HEAD so it picks up any workflow fixes, then
-    # dispatch via workflow_dispatch (tag re-push alone is unreliable).
+    # Move the tag to HEAD so it picks up any workflow fixes.
+    # The tag push triggers the release workflow via the push:tags event.
     echo "Moving tag '$TAG' to current HEAD..."
     git tag -d "$TAG"
     git push origin ":refs/tags/$TAG"
     git tag "$TAG"
     git push origin "$TAG"
 
-    echo "Dispatching release workflow on ref '$TAG'..."
-    gh workflow run release.yml --ref "$TAG"
-
     echo ""
-    echo "Done. Release workflow dispatched for '$TAG'."
+    echo "Done. Tag '$TAG' re-pushed — the GitHub Actions release workflow should now be running."
     echo "https://github.com/keathmilligan/unfk/actions"
     exit 0
 fi
