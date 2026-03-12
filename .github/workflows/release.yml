@@ -11,7 +11,6 @@ jobs:
       project-name: unfk
       binary-name: unfk
       project-type: rust
-      bundle-id: net.keathmilligan.unfk
       targets: >-
         x86_64-apple-darwin,
         aarch64-apple-darwin,
