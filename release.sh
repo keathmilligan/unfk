@@ -140,7 +140,7 @@ if $TAG_EXISTS_LOCALLY && ! $TAG_EXISTS_REMOTE; then
 fi
 
 if $TAG_EXISTS_LOCALLY && $TAG_EXISTS_REMOTE; then
-    echo "Tag '$TAG' already exists on remote — triggering release workflow via workflow_dispatch..."
+    echo "Tag '$TAG' already exists on remote — retrying release..."
 
     # Ensure Cargo.toml is at the correct version before proceeding.
     CURRENT_CARGO_VERSION=$(grep -m1 '^version = ' "$CARGO_TOML" | grep -oP '"\K[^"]+(?=")')
@@ -148,8 +148,14 @@ if $TAG_EXISTS_LOCALLY && $TAG_EXISTS_REMOTE; then
         die "Cargo.toml version ($CURRENT_CARGO_VERSION) does not match tag ($NEW_VERSION)."
     fi
 
-    # Trigger the workflow using gh CLI with --ref pointing to the tag.
-    # This sets GITHUB_REF to refs/tags/v<version>, matching the tag-push path.
+    # Move the tag to HEAD so it picks up any workflow fixes, then
+    # dispatch via workflow_dispatch (tag re-push alone is unreliable).
+    echo "Moving tag '$TAG' to current HEAD..."
+    git tag -d "$TAG"
+    git push origin ":refs/tags/$TAG"
+    git tag "$TAG"
+    git push origin "$TAG"
+
     echo "Dispatching release workflow on ref '$TAG'..."
     gh workflow run release.yml --ref "$TAG"
 
