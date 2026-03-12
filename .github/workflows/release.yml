@@ -10,6 +10,8 @@ permissions:
 
 jobs:
   release:
+    # Skip runs triggered by tag deletion (e.g. when re-tagging after a failed release)
+    if: github.event_name == 'workflow_dispatch' || github.event.after != '0000000000000000000000000000000000000000'
     uses: keathmilligan/release-infra/.github/workflows/release.yml@master
     with:
       project-name: unfk
