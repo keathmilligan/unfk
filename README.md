@@ -6,13 +6,13 @@
 
 _`UNiversal File... Korrector?`_
 
-A fast, modern CLI tool for scanning and repairing file formatting issues
+A fast CLI tool for scanning and repairing file formatting issues in a broad variety of file types.
 
 ---
 
 ## Overview
 
-`unfk` detects and fixes common file formatting inconsistencies across your codebase:
+`unfk` detects and fixes common file formatting inconsistencies:
 
 - **Line endings** — mixed or incorrect line endings (LF vs CRLF)
 - **Indentation** — inconsistent tabs/spaces or wrong indent width
@@ -21,111 +21,76 @@ A fast, modern CLI tool for scanning and repairing file formatting issues
 - **Trailing whitespace** — spaces/tabs at end of lines
 - **Blank lines (Markdown)** — multiple successive blank lines in `.md` files
 
-Unlike code formatters such as Prettier or Black, `unfk` is not concerned with code style or syntax. Instead, it focuses on low-level file hygiene issues that affect a much broader range of file types—config files, scripts, data files, documentation, and more.
+Unlike code formatters such as Prettier or Black, `unfk` is not concerned with code style or syntax. Instead, it focuses on general formatting and file hygiene issues that affect a much broader range of file types — config files, scripts, data files, documentation, and more.
 
 `unfk` is aware of file type-specific conventions and applies the right defaults automatically. For example:
 
-- Windows batch files (`.bat`, `.cmd`) and PowerShell scripts require CRLF line endings
+- `.go` files use tabs by convention, while `.py` and `.rs` use 4 spaces and `.rb` uses 2, etc.
 - `Makefile` requires tabs for indentation
-- `.go` files use tabs by convention, while `.py` uses 4 spaces and `.rb` uses 2
-- `.vb` and `.reg` files expect CRLF
+- `.vb` and `.reg` files require CRLF line-endings
+- Windows batch files (`.bat`, `.cmd`) and PowerShell scripts (`.ps1`) require CRLF line endings
 
 This means you can run `unfk fix` across a mixed codebase and trust it to do the right thing for each file type.
 
-### Markdown-Specific Features
-
-For markdown files (`.md`), `unfk` includes additional checks:
-
-- **Successive blank lines**: Detects and optionally fixes multiple consecutive blank lines (double-spacing or more)
-- Single blank lines between paragraphs are preserved (standard markdown practice)
-- Two trailing spaces (markdown line breaks) are preserved by default
-
 Example:
 ```bash
-# Scan for issues including successive blank lines
+# Scan and optionally fix files recursively
+unfk
+
+# Scan a file or directory
 unfk scan document.md
 
-# Fix all issues including successive blank lines
+# Fix all issues
 unfk fix --all document.md
 ```
 
-## Installation
+`unfk` is written in Rust and runs on macOS, Linux and Windows (Intel, ARM and Apple Silicon).
 
-### cargo
+## Installation and Update
 
-```bash
-cargo install unfk
-```
+There are many ways to install `unfk` depending on your platform.
 
-### Shell installer (macOS / Linux)
-
-```bash
-curl -fsSL https://install.keathmilligan.dev/unfk/install.sh | sh
-```
-
-### PowerShell installer (Windows)
-
-```powershell
-irm https://install.keathmilligan.dev/unfk/install.ps1 | iex
-```
-
-### Windows MSI
-
-Download the signed `.msi` installer directly from the [GitHub Releases](https://github.com/keathmilligan/unfk/releases) page.
-
-### Homebrew (macOS / Linux)
+### macOS (Homebrew)
 
 ```bash
 brew tap keathmilligan/tap
 brew install keathmilligan/tap/unfk
 ```
 
-### Scoop (Windows)
+Stay up-to-date with `brew upgrade unfk`.
 
-```powershell
-scoop bucket add keathmilligan https://github.com/keathmilligan/scoop-bucket
-scoop install unfk
-```
+See the [macOS Install Guide](docs/install-macos.md) for other ways to install on macOS.
 
-### Chocolatey (Windows)
+### Windows (winget)
 
-```powershell
-choco install unfk
-```
-
-### winget (Windows)
+In an elevated powershell session, run:
 
 ```powershell
 winget install keathmilligan.unfk
 ```
 
-### apt (Debian / Ubuntu)
+Stay up-to-date with `winget upgrade unfk`.
+
+See the [Windows Install Guide](docs/install-windows.md) for other ways to install on Windows.
+
+### Linux (shell installer)
 
 ```bash
-curl -fsSL https://install.keathmilligan.dev/gpg.key | sudo gpg --dearmor -o /etc/apt/keyrings/keathmilligan.gpg
-echo "deb [signed-by=/etc/apt/keyrings/keathmilligan.gpg] https://install.keathmilligan.dev/apt stable main" | sudo tee /etc/apt/sources.list.d/keathmilligan.list
-sudo apt update
-sudo apt install unfk
+curl -fsSL https://packages.keathmilligan.net/unfk/install.sh | sh
 ```
 
-### dnf / rpm (Fedora / RHEL / CentOS)
+This will install `unfk` into `~/.local/bin`.
 
-```bash
-sudo curl -o /etc/yum.repos.d/keathmilligan.repo https://install.keathmilligan.dev/rpm/keathmilligan.repo
-sudo dnf install unfk
-```
-
-### AUR (Arch Linux)
-
-```bash
-yay -S unfk-bin
-```
+See the [Linux Install Guide](docs/install-linux.md) for other ways to install on Linux.
 
 ## Quick Start
 
 ```bash
-# Scan current directory for issues
+# Scan current directory and optionally fix issues
 unfk
+
+# Scan a file or directory
+unfk scan docs
 
 # Fix all issues
 unfk fix
@@ -141,7 +106,8 @@ unfk init
 
 | Command | Description |
 |---------|-------------|
-| `unfk` / `unfk scan` | Scan for formatting issues |
+| `unfk` | Scan for issues and optionally fix|
+| `unfk scan` | Scan for issues |
 | `unfk fix` | Automatically repair issues |
 | `unfk init` | Create `.unfkrc.toml` config file |
 | `unfk types` | List supported file types |
@@ -200,14 +166,6 @@ width = 4
 | `unix2dos` | `unfk fix --line-ending crlf` |
 | `mac2unix` | `unfk fix --line-ending lf` |
 | `fromdos` / `todos` | `unfk fix --line-ending lf` / `crlf` |
-
-### Why switch?
-
-- **File-type awareness** — `unfk` automatically uses the correct line ending for each file type. Windows batch files stay CRLF even when you normalize everything else to LF.
-- **Batch processing** — Fix entire directories recursively with proper gitignore support.
-- **More than line endings** — While you're at it, fix indentation, encoding, final newlines, and trailing whitespace too.
-- **Dry-run mode** — Preview changes with `--dry-run` before modifying files.
-- **Modern defaults** — Sensible out-of-the-box behavior for contemporary development workflows.
 
 ```bash
 # Convert all files to LF (respecting file-type conventions)
