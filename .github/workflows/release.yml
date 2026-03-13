@@ -31,13 +31,13 @@ jobs:
       packages-repo: keathmilligan/packages
       enable-cargo: true
       enable-install-scripts: true
-      enable-homebrew: false
-      enable-scoop: false
-      enable-chocolatey: false
-      enable-winget: false
-      enable-apt: false
-      enable-rpm: false
+      enable-homebrew: true
+      enable-scoop: true
+      enable-chocolatey: true
+      enable-winget: true
+      enable-apt: true
+      enable-rpm: true
       enable-apk: false
-      enable-dmg: false
-      enable-aur: false
+      enable-dmg: true
+      enable-aur: true
     secrets: inherit
