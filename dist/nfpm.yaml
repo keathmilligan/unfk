@@ -7,5 +7,5 @@ description: "A fast, modern CLI tool for scanning and repairing file formatting
 homepage: "https://github.com/keathmilligan/unfk"
 license: "MIT"
 contents:
-  - src: ./unfk
+  - src: ./packaging/unfk
     dst: /usr/bin/unfk
