@@ -1,6 +1,8 @@
+use std::io::{self, Write};
 use std::process::ExitCode;
 
 use anyhow::Result;
+use colored::Colorize;
 use unfk::cli::{Cli, Commands, BANNER};
 use unfk::config::Config;
 use unfk::discovery::FileDiscovery;
@@ -23,7 +25,7 @@ fn run() -> Result<unfk::ExitCode> {
     if cli.version {
         print!("{}", BANNER);
         println!("unfk {}", env!("CARGO_PKG_VERSION"));
-        println!("A fast, modern CLI tool for scanning and repairing file formatting issues");
+        println!("A fast CLI tool for scanning and repairing file formatting issues");
         return Ok(unfk::ExitCode::Success);
     }
 
@@ -36,18 +38,70 @@ fn run() -> Result<unfk::ExitCode> {
     // Execute the appropriate command
     match &cli.command {
         Some(Commands::Scan { paths }) => {
-            run_scan(&cli, &config, &reporter, paths)
+            let result = run_scan(&cli, &config, &reporter, paths, false)?;
+            Ok(result.exit_code)
         }
         None => {
-            run_scan(&cli, &config, &reporter, &cli.paths)
+            // Default behavior: run scan and potentially prompt for fix
+            let result = run_scan(&cli, &config, &reporter, &cli.paths, false)?;
+            // Only prompt if interactive (stdin is a TTY) and issues were found and not quiet
+            let is_interactive = atty::is(atty::Stream::Stdin);
+            if result.issues_found && is_interactive && !cli.quiet {
+                // Prompt user to fix issues
+                match prompt_fix()? {
+                    true => {
+                        // User wants to fix, run fix command
+                        println!();
+                        run_fix(&cli, &config, &reporter, &cli.paths, cli.dry_run, false)
+                    }
+                    false => {
+                        // User declined, exit with success (not an error for default behavior)
+                        Ok(unfk::ExitCode::Success)
+                    }
+                }
+            } else {
+                // Non-interactive or quiet mode: return scan result like explicit scan command
+                Ok(result.exit_code)
+            }
         }
-        Some(Commands::Fix { paths, dry_run, all }) => {
-            run_fix(&cli, &config, &reporter, paths, *dry_run || cli.dry_run, *all)
-        }
+        Some(Commands::Fix {
+            paths,
+            dry_run,
+            all,
+        }) => run_fix(
+            &cli,
+            &config,
+            &reporter,
+            paths,
+            *dry_run || cli.dry_run,
+            *all,
+        ),
         Some(Commands::Init { force }) => run_init(*force),
         Some(Commands::Types { show }) => run_types(show.as_deref()),
         Some(Commands::Config { dump }) => run_config(&config, *dump),
     }
+}
+
+/// Result from running a scan, including exit code and whether issues were found
+struct ScanResult {
+    exit_code: unfk::ExitCode,
+    issues_found: bool,
+}
+
+/// Prompt the user whether they want to fix discovered issues
+fn prompt_fix() -> Result<bool> {
+    print!(
+        "\n{} Would you like to fix these issues? [Y/n] ",
+        "?".cyan().bold()
+    );
+    io::stdout().flush()?;
+
+    let mut input = String::new();
+    io::stdin().read_line(&mut input)?;
+
+    let input = input.trim().to_lowercase();
+    // Default to "yes" if user just presses Enter
+    Ok(input.is_empty() || input == "y" || input == "yes")
 }
 
 fn run_scan(
@@ -55,7 +109,8 @@ fn run_scan(
     config: &Config,
     reporter: &Reporter,
     paths: &[std::path::PathBuf],
-) -> Result<unfk::ExitCode> {
+    _is_explicit_scan: bool,
+) -> Result<ScanResult> {
     let paths = if paths.is_empty() {
         vec![std::path::PathBuf::from(".")]
     } else {
@@ -97,11 +152,17 @@ fn run_scan(
 
     reporter.report_summary(files_with_issues, error_count, warning_count);
 
-    if error_count + warning_count > 0 {
-        Ok(unfk::ExitCode::IssuesFound)
+    let total_issues = error_count + warning_count;
+    let exit_code = if total_issues > 0 {
+        unfk::ExitCode::IssuesFound
     } else {
-        Ok(unfk::ExitCode::Success)
-    }
+        unfk::ExitCode::Success
+    };
+
+    Ok(ScanResult {
+        exit_code,
+        issues_found: total_issues > 0,
+    })
 }
 
 fn run_fix(

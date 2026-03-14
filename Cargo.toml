@@ -38,6 +38,9 @@ rayon = "1"
 # Output formatting
 colored = "2"
 
+# TTY detection for interactive mode
+atty = "0.2"
+
 # Error handling
 thiserror = "1"
 anyhow = "1"
