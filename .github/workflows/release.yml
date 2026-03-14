@@ -39,5 +39,5 @@ jobs:
       enable-rpm: true
       enable-apk: false
       enable-dmg: true
-      enable-aur: true
+      enable-aur: false
     secrets: inherit
