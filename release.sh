@@ -100,10 +100,17 @@ echo "  Published : $PUBLISHED_VERSION"
 echo "  New       : $NEW_VERSION"
 
 # ---------------------------------------------------------------------------
-# Validate the increment.
+# Validate the increment (skip if this is a retry of same version).
 # ---------------------------------------------------------------------------
 
-if ! is_valid_increment "$PUBLISHED_VERSION" "$NEW_VERSION"; then
+TAG="v${NEW_VERSION}"
+TAG_EXISTS_REMOTE=false
+git ls-remote --exit-code --tags origin "$TAG" &>/dev/null && TAG_EXISTS_REMOTE=true
+
+if [[ "$PUBLISHED_VERSION" == "$NEW_VERSION" ]] && $TAG_EXISTS_REMOTE; then
+    echo "Version already published on crates.io and tag exists on remote."
+    echo "Treating as a retry - skipping version increment validation."
+elif ! is_valid_increment "$PUBLISHED_VERSION" "$NEW_VERSION"; then
     die "'$NEW_VERSION' is not a valid semver increment of '$PUBLISHED_VERSION'. " \
         "Allowed: $((${PUBLISHED_VERSION%%.*} + 1)).0.0, " \
         "$(echo "$PUBLISHED_VERSION" | cut -d. -f1).$(($(echo "$PUBLISHED_VERSION" | cut -d. -f2) + 1)).0, " \
@@ -129,7 +136,6 @@ fi
 
 # Guard: tag must not already exist locally, unless it is also on the remote
 # (indicating a previous workflow run failed and we need to retry).
-TAG="v${NEW_VERSION}"
 TAG_EXISTS_LOCALLY=false
 TAG_EXISTS_REMOTE=false
 git rev-parse "$TAG" &>/dev/null && TAG_EXISTS_LOCALLY=true
