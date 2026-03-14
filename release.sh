@@ -139,7 +139,8 @@ if $TAG_EXISTS_LOCALLY && ! $TAG_EXISTS_REMOTE; then
     die "Tag '$TAG' exists locally but not on remote. Delete it with 'git tag -d $TAG' and retry."
 fi
 
-if $TAG_EXISTS_LOCALLY && $TAG_EXISTS_REMOTE; then
+# Handle retry: tag exists on remote (whether locally or not)
+if $TAG_EXISTS_REMOTE; then
     echo "Tag '$TAG' already exists on remote — retrying release..."
 
     # Ensure Cargo.toml is at the correct version before proceeding.
@@ -151,7 +152,13 @@ if $TAG_EXISTS_LOCALLY && $TAG_EXISTS_REMOTE; then
     # Move the tag to HEAD so it picks up any workflow fixes.
     # The tag push triggers the release workflow via the push:tags event.
     echo "Moving tag '$TAG' to current HEAD..."
-    git tag -d "$TAG"
+    
+    # Delete local tag if it exists, then recreate
+    if $TAG_EXISTS_LOCALLY; then
+        git tag -d "$TAG"
+    fi
+    
+    # Delete and recreate on remote
     git push origin ":refs/tags/$TAG"
     git tag "$TAG"
     git push origin "$TAG"
