@@ -15,7 +15,7 @@ Stay up-to-date with `winget upgrade unfk`
 In an elevated powershell session, run:
 
 ```powershell
-irm https://install.keathmilligan.dev/unfk/install.ps1 | iex
+irm https://packages.keathmilligan.net/unfk/install.ps1 | iex
 ```
 
 ## cargo

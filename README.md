@@ -61,15 +61,13 @@ Stay up-to-date with `brew upgrade unfk`.
 
 See the [macOS Install Guide](docs/install-macos.md) for other ways to install on macOS.
 
-### Windows (winget)
+### Windows (PowerShell)
 
 In an elevated powershell session, run:
 
 ```powershell
-winget install keathmilligan.unfk
+irm https://packages.keathmilligan.net/unfk/install.ps1 | iex
 ```
-
-Stay up-to-date with `winget upgrade unfk`.
 
 See the [Windows Install Guide](docs/install-windows.md) for other ways to install on Windows.
 

@@ -30,8 +30,8 @@ brew install keathmilligan/tap/unfk
 ## apt (Debian / Ubuntu)
 
 ```bash
-curl -fsSL https://install.keathmilligan.dev/gpg.key | sudo gpg --dearmor -o /etc/apt/keyrings/keathmilligan.gpg
-echo "deb [signed-by=/etc/apt/keyrings/keathmilligan.gpg] https://install.keathmilligan.dev/apt stable main" | sudo tee /etc/apt/sources.list.d/keathmilligan.list
+curl -fsSL https://packages.keathmilligan.net/gpg.key | sudo gpg --dearmor -o /etc/apt/keyrings/keathmilligan.gpg
+echo "deb [signed-by=/etc/apt/keyrings/keathmilligan.gpg] https://packages.keathmilligan.net/apt stable main" | sudo tee /etc/apt/sources.list.d/keathmilligan.list
 sudo apt update
 sudo apt install unfk
 ```
@@ -45,7 +45,7 @@ sudo apt upgrade unfk
 ## dnf / rpm (Fedora / RHEL / CentOS)
 
 ```bash
-sudo curl -o /etc/yum.repos.d/keathmilligan.repo https://install.keathmilligan.dev/rpm/keathmilligan.repo
+sudo curl -o /etc/yum.repos.d/keathmilligan.repo https://packages.keathmilligan.net/rpm/keathmilligan.repo
 sudo dnf install unfk
 ```
 
