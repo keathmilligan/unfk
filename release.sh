@@ -10,13 +10,14 @@ die() { echo "error: $*" >&2; exit 1; }
 
 usage() {
     cat >&2 <<EOF
-Usage: $(basename "$0") <new-version>
+Usage: $(basename "$0") [--force] <new-version>
 
+  --force       Skip version increment validation (use for re-releases)
   new-version   Semantic version without the 'v' prefix (e.g. 1.2.0)
 
 The script:
   1. Validates the new version is a valid semver increment of the
-     currently published crates.io version.
+     currently published crates.io version (unless --force is used).
   2. Updates Cargo.toml (and Cargo.lock via 'cargo update -p unfk').
   3. Updates the version badge / mention in README.md if present.
   4. Commits and pushes the version bump to master.
@@ -67,6 +68,14 @@ is_valid_increment() {
 # Argument check
 # ---------------------------------------------------------------------------
 
+[[ $# -ge 1 ]] || usage
+
+FORCE=false
+if [[ "$1" == "--force" ]]; then
+    FORCE=true
+    shift
+fi
+
 [[ $# -eq 1 ]] || usage
 NEW_VERSION="${1#v}"   # strip accidental leading 'v'
 
@@ -100,21 +109,23 @@ echo "  Published : $PUBLISHED_VERSION"
 echo "  New       : $NEW_VERSION"
 
 # ---------------------------------------------------------------------------
-# Validate the increment (skip if this is a retry of same version).
+# Validate the increment (skip if this is a retry of same version, or if --force).
 # ---------------------------------------------------------------------------
 
 TAG="v${NEW_VERSION}"
 TAG_EXISTS_REMOTE=false
 git ls-remote --exit-code --tags origin "$TAG" &>/dev/null && TAG_EXISTS_REMOTE=true
 
-if [[ "$PUBLISHED_VERSION" == "$NEW_VERSION" ]] && $TAG_EXISTS_REMOTE; then
+if $FORCE; then
+    echo "Force mode enabled — skipping version increment validation."
+elif [[ "$PUBLISHED_VERSION" == "$NEW_VERSION" ]] && $TAG_EXISTS_REMOTE; then
     echo "Version already published on crates.io and tag exists on remote."
     echo "Treating as a retry - skipping version increment validation."
 elif ! is_valid_increment "$PUBLISHED_VERSION" "$NEW_VERSION"; then
     die "'$NEW_VERSION' is not a valid semver increment of '$PUBLISHED_VERSION'. " \
         "Allowed: $((${PUBLISHED_VERSION%%.*} + 1)).0.0, " \
         "$(echo "$PUBLISHED_VERSION" | cut -d. -f1).$(($(echo "$PUBLISHED_VERSION" | cut -d. -f2) + 1)).0, " \
-        "or $PUBLISHED_VERSION with the patch incremented by 1."
+        "or $PUBLISHED_VERSION with the patch incremented by 1. Use --force to bypass this check."
 fi
 
 echo "Version increment is valid."

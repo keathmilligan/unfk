@@ -29,15 +29,15 @@ jobs:
       tap-repo: keathmilligan/homebrew-tap
       bucket-repo: keathmilligan/scoop-bucket
       packages-repo: keathmilligan/packages
-      enable-cargo: true
-      enable-install-scripts: true
-      enable-homebrew: true
-      enable-scoop: true
+      enable-cargo: false
+      enable-install-scripts: false
+      enable-homebrew: false
+      enable-scoop: false
       enable-chocolatey: true
       enable-winget: false
-      enable-apt: true
-      enable-rpm: true
+      enable-apt: false
+      enable-rpm: false
       enable-apk: false
-      enable-dmg: true
+      enable-dmg: false
       enable-aur: false
     secrets: inherit
