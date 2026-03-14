@@ -153,7 +153,9 @@ git rev-parse "$TAG" &>/dev/null && TAG_EXISTS_LOCALLY=true
 git ls-remote --exit-code --tags origin "$TAG" &>/dev/null && TAG_EXISTS_REMOTE=true
 
 if $TAG_EXISTS_LOCALLY && ! $TAG_EXISTS_REMOTE; then
-    die "Tag '$TAG' exists locally but not on remote. Delete it with 'git tag -d $TAG' and retry."
+    echo "Tag '$TAG' exists locally but not on remote. Deleting local tag..."
+    git tag -d "$TAG"
+    TAG_EXISTS_LOCALLY=false
 fi
 
 # Handle retry: tag exists on remote (whether locally or not)
