@@ -6,13 +6,13 @@
 
 [![CI](https://github.com/keathmilligan/unfk/actions/workflows/ci.yml/badge.svg)](https://github.com/keathmilligan/unfk/actions/workflows/ci.yml)
 [![Release](https://github.com/keathmilligan/unfk/actions/workflows/release.yml/badge.svg)](https://github.com/keathmilligan/unfk/actions/workflows/release.yml)
-[![macOS DMG](https://github.com/keathmilligan/unfk/actions/workflows/release.yml/badge.svg?label=macOS%20DMG)](https://github.com/keathmilligan/unfk/actions/workflows/release.yml)
-[![Homebrew](https://github.com/keathmilligan/unfk/actions/workflows/release.yml/badge.svg?label=Homebrew)](https://github.com/keathmilligan/unfk/actions/workflows/release.yml)
-[![Scoop](https://github.com/keathmilligan/unfk/actions/workflows/release.yml/badge.svg?label=Scoop)](https://github.com/keathmilligan/unfk/actions/workflows/release.yml)
-[![apt](https://github.com/keathmilligan/unfk/actions/workflows/release.yml/badge.svg?label=apt)](https://github.com/keathmilligan/unfk/actions/workflows/release.yml)
-[![rpm](https://github.com/keathmilligan/unfk/actions/workflows/release.yml/badge.svg?label=rpm)](https://github.com/keathmilligan/unfk/actions/workflows/release.yml)
-[![crates.io](https://github.com/keathmilligan/unfk/actions/workflows/release.yml/badge.svg?label=crates.io)](https://github.com/keathmilligan/unfk/actions/workflows/release.yml)
-[![Install Scripts](https://github.com/keathmilligan/unfk/actions/workflows/release.yml/badge.svg?label=Install%20Scripts)](https://github.com/keathmilligan/unfk/actions/workflows/release.yml)
+[![macOS DMG](https://packages.keathmilligan.net/unfk/badges/macos-dmg.svg)](https://github.com/keathmilligan/unfk/releases/latest)
+[![Homebrew](https://packages.keathmilligan.net/unfk/badges/homebrew.svg)](https://github.com/keathmilligan/unfk/releases/latest)
+[![Scoop](https://packages.keathmilligan.net/unfk/badges/scoop.svg)](https://github.com/keathmilligan/unfk/releases/latest)
+[![apt](https://packages.keathmilligan.net/unfk/badges/apt.svg)](https://github.com/keathmilligan/unfk/releases/latest)
+[![rpm](https://packages.keathmilligan.net/unfk/badges/rpm.svg)](https://github.com/keathmilligan/unfk/releases/latest)
+[![crates.io](https://packages.keathmilligan.net/unfk/badges/crates-io.svg)](https://github.com/keathmilligan/unfk/releases/latest)
+[![Install Scripts](https://packages.keathmilligan.net/unfk/badges/install-scripts.svg)](https://github.com/keathmilligan/unfk/releases/latest)
 
 _`UNiversal File... Korrector?`_
 
