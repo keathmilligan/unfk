@@ -14,6 +14,7 @@
 [![rpm](https://packages.keathmilligan.net/unfk/badges/rpm.svg)](https://github.com/keathmilligan/unfk/releases/latest)
 [![crates.io](https://packages.keathmilligan.net/unfk/badges/crates-io.svg)](https://github.com/keathmilligan/unfk/releases/latest)
 [![Install Scripts](https://packages.keathmilligan.net/unfk/badges/install-scripts.svg)](https://github.com/keathmilligan/unfk/releases/latest)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
 _`UNiversal File... Korrector?`_
 
