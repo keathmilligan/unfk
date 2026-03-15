@@ -6,13 +6,13 @@
 
 [![CI](https://github.com/keathmilligan/unfk/actions/workflows/ci.yml/badge.svg)](https://github.com/keathmilligan/unfk/actions/workflows/ci.yml)
 [![Release](https://github.com/keathmilligan/unfk/actions/workflows/release.yml/badge.svg)](https://github.com/keathmilligan/unfk/actions/workflows/release.yml)
-[![macOS DMG](https://github.com/keathmilligan/unfk/actions/workflows/release.yml/badge.svg)](https://github.com/keathmilligan/unfk/actions/workflows/release.yml)
-[![Homebrew](https://github.com/keathmilligan/unfk/actions/workflows/release.yml/badge.svg)](https://github.com/keathmilligan/unfk/actions/workflows/release.yml)
-[![Scoop](https://github.com/keathmilligan/unfk/actions/workflows/release.yml/badge.svg)](https://github.com/keathmilligan/unfk/actions/workflows/release.yml)
-[![apt](https://github.com/keathmilligan/unfk/actions/workflows/release.yml/badge.svg)](https://github.com/keathmilligan/unfk/actions/workflows/release.yml)
-[![rpm](https://github.com/keathmilligan/unfk/actions/workflows/release.yml/badge.svg)](https://github.com/keathmilligan/unfk/actions/workflows/release.yml)
-[![crates.io](https://github.com/keathmilligan/unfk/actions/workflows/release.yml/badge.svg)](https://github.com/keathmilligan/unfk/actions/workflows/release.yml)
-[![Install Scripts](https://github.com/keathmilligan/unfk/actions/workflows/release.yml/badge.svg)](https://github.com/keathmilligan/unfk/actions/workflows/release.yml)
+[![macOS DMG](https://github.com/keathmilligan/unfk/actions/workflows/release.yml/badge.svg?label=macOS%20DMG)](https://github.com/keathmilligan/unfk/actions/workflows/release.yml)
+[![Homebrew](https://github.com/keathmilligan/unfk/actions/workflows/release.yml/badge.svg?label=Homebrew)](https://github.com/keathmilligan/unfk/actions/workflows/release.yml)
+[![Scoop](https://github.com/keathmilligan/unfk/actions/workflows/release.yml/badge.svg?label=Scoop)](https://github.com/keathmilligan/unfk/actions/workflows/release.yml)
+[![apt](https://github.com/keathmilligan/unfk/actions/workflows/release.yml/badge.svg?label=apt)](https://github.com/keathmilligan/unfk/actions/workflows/release.yml)
+[![rpm](https://github.com/keathmilligan/unfk/actions/workflows/release.yml/badge.svg?label=rpm)](https://github.com/keathmilligan/unfk/actions/workflows/release.yml)
+[![crates.io](https://github.com/keathmilligan/unfk/actions/workflows/release.yml/badge.svg?label=crates.io)](https://github.com/keathmilligan/unfk/actions/workflows/release.yml)
+[![Install Scripts](https://github.com/keathmilligan/unfk/actions/workflows/release.yml/badge.svg?label=Install%20Scripts)](https://github.com/keathmilligan/unfk/actions/workflows/release.yml)
 
 _`UNiversal File... Korrector?`_
 
