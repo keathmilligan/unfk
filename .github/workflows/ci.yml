@@ -30,3 +30,24 @@ jobs:
 
       - name: Build (release)
         run: cargo build --release
+
+  publish-badges:
+    name: Refresh README Badges
+    needs: ci
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+    uses: keathmilligan/release-infra/.github/workflows/publish-badges.yml@master
+    with:
+      project-name: unfk
+      packages-repo: keathmilligan/packages
+      enable-cargo: true
+      enable-install-scripts: true
+      enable-homebrew: true
+      enable-scoop: true
+      enable-apt: true
+      enable-rpm: true
+      enable-dmg: true
+      enable-chocolatey: false
+      enable-winget: false
+      enable-apk: false
+      enable-aur: false
+    secrets: inherit
