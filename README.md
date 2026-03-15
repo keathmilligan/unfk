@@ -7,6 +7,7 @@
 [![CI](https://github.com/keathmilligan/unfk/actions/workflows/ci.yml/badge.svg)](https://github.com/keathmilligan/unfk/actions/workflows/ci.yml)
 [![Release](https://github.com/keathmilligan/unfk/actions/workflows/release.yml/badge.svg)](https://github.com/keathmilligan/unfk/actions/workflows/release.yml)
 [![macOS DMG](https://packages.keathmilligan.net/unfk/badges/macos-dmg.svg)](https://github.com/keathmilligan/unfk/releases/latest)
+[![Windows MSI](https://packages.keathmilligan.net/unfk/badges/msi.svg)](https://github.com/keathmilligan/unfk/releases/latest)
 [![Homebrew](https://packages.keathmilligan.net/unfk/badges/homebrew.svg)](https://github.com/keathmilligan/unfk/releases/latest)
 [![Scoop](https://packages.keathmilligan.net/unfk/badges/scoop.svg)](https://github.com/keathmilligan/unfk/releases/latest)
 [![apt](https://packages.keathmilligan.net/unfk/badges/apt.svg)](https://github.com/keathmilligan/unfk/releases/latest)

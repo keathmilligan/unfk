@@ -46,6 +46,7 @@ jobs:
       enable-apt: true
       enable-rpm: true
       enable-dmg: true
+      enable-msi: true
       enable-chocolatey: false
       enable-winget: false
       enable-apk: false
