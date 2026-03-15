@@ -34,7 +34,7 @@ jobs:
   publish-badges:
     name: Refresh README Badges
     needs: ci
-    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+    if: always() && github.event_name == 'push' && github.ref == 'refs/heads/master'
     uses: keathmilligan/release-infra/.github/workflows/publish-badges.yml@master
     with:
       project-name: unfk
