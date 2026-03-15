@@ -4,6 +4,16 @@
   <img src="unfk-lt.png" alt="OpenCode logo">
 </picture>
 
+[![CI](https://github.com/keathmilligan/unfk/actions/workflows/ci.yml/badge.svg)](https://github.com/keathmilligan/unfk/actions/workflows/ci.yml)
+[![Release](https://github.com/keathmilligan/unfk/actions/workflows/release.yml/badge.svg)](https://github.com/keathmilligan/unfk/actions/workflows/release.yml)
+[![macOS DMG](https://github.com/keathmilligan/unfk/actions/workflows/release.yml/badge.svg)](https://github.com/keathmilligan/unfk/actions/workflows/release.yml)
+[![Homebrew](https://github.com/keathmilligan/unfk/actions/workflows/release.yml/badge.svg)](https://github.com/keathmilligan/unfk/actions/workflows/release.yml)
+[![Scoop](https://github.com/keathmilligan/unfk/actions/workflows/release.yml/badge.svg)](https://github.com/keathmilligan/unfk/actions/workflows/release.yml)
+[![apt](https://github.com/keathmilligan/unfk/actions/workflows/release.yml/badge.svg)](https://github.com/keathmilligan/unfk/actions/workflows/release.yml)
+[![rpm](https://github.com/keathmilligan/unfk/actions/workflows/release.yml/badge.svg)](https://github.com/keathmilligan/unfk/actions/workflows/release.yml)
+[![crates.io](https://github.com/keathmilligan/unfk/actions/workflows/release.yml/badge.svg)](https://github.com/keathmilligan/unfk/actions/workflows/release.yml)
+[![Install Scripts](https://github.com/keathmilligan/unfk/actions/workflows/release.yml/badge.svg)](https://github.com/keathmilligan/unfk/actions/workflows/release.yml)
+
 _`UNiversal File... Korrector?`_
 
 A fast CLI tool for scanning and repairing file formatting issues in a broad variety of file types.

@@ -41,4 +41,7 @@ jobs:
       enable-dmg: true
       enable-msi: true
       enable-aur: false
+      enable-readme-badges: true
+      repo-owner: keathmilligan
+      repo-name: unfk
     secrets: inherit
