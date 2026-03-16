@@ -73,7 +73,10 @@ impl Issue {
     /// Get a human-readable description of the issue
     pub fn description(&self) -> String {
         match self {
-            Issue::MixedLineEndings { lf_count, crlf_count } => {
+            Issue::MixedLineEndings {
+                lf_count,
+                crlf_count,
+            } => {
                 format!("Mixed line endings ({lf_count} LF, {crlf_count} CRLF)")
             }
             Issue::WrongLineEnding { expected, found } => {
@@ -250,11 +253,7 @@ mod tests {
         ];
 
         for issue in fixable_issues {
-            assert!(
-                issue.is_fixable(),
-                "{:?} should be fixable",
-                issue
-            );
+            assert!(issue.is_fixable(), "{:?} should be fixable", issue);
         }
     }
 
@@ -275,11 +274,7 @@ mod tests {
         ];
 
         for issue in unfixable_issues {
-            assert!(
-                !issue.is_fixable(),
-                "{:?} should NOT be fixable",
-                issue
-            );
+            assert!(!issue.is_fixable(), "{:?} should NOT be fixable", issue);
         }
     }
 }

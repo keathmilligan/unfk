@@ -928,7 +928,11 @@ impl FileTypeRegistry {
         // Check filename first (for Makefile, etc.)
         if let Some(filename) = path.file_name().and_then(|n| n.to_str()) {
             for ft in &self.types {
-                if ft.extensions.iter().any(|e| e.eq_ignore_ascii_case(filename)) {
+                if ft
+                    .extensions
+                    .iter()
+                    .any(|e| e.eq_ignore_ascii_case(filename))
+                {
                     return Some(ft);
                 }
             }

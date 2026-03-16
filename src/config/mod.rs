@@ -382,7 +382,10 @@ pub struct FileSettings {
 fn parse_size(s: &str) -> Option<usize> {
     let s = s.trim().to_uppercase();
     if let Some(num) = s.strip_suffix("GB") {
-        num.trim().parse::<usize>().ok().map(|n| n * 1024 * 1024 * 1024)
+        num.trim()
+            .parse::<usize>()
+            .ok()
+            .map(|n| n * 1024 * 1024 * 1024)
     } else if let Some(num) = s.strip_suffix("MB") {
         num.trim().parse::<usize>().ok().map(|n| n * 1024 * 1024)
     } else if let Some(num) = s.strip_suffix("KB") {

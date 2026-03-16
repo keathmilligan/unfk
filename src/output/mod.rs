@@ -34,11 +34,7 @@ impl<'a> Reporter<'a> {
         for issue in issues {
             if issue.is_fixable() {
                 // Errors (fixable) - shown in red
-                println!(
-                    "  {} {}",
-                    "error:".red().bold(),
-                    issue.description().red()
-                );
+                println!("  {} {}", "error:".red().bold(), issue.description().red());
             } else {
                 // Warnings (unfixable) - shown in yellow
                 println!(
@@ -65,12 +61,7 @@ impl<'a> Reporter<'a> {
             return;
         }
 
-        eprintln!(
-            "{} {}: {}",
-            "error:".red().bold(),
-            path.display(),
-            error
-        );
+        eprintln!("{} {}: {}", "error:".red().bold(), path.display(), error);
     }
 
     /// Report what would be fixed (dry-run mode)
@@ -125,11 +116,7 @@ impl<'a> Reporter<'a> {
             if warning_count > 0 {
                 parts.push(format!("{} warnings", warning_count).yellow().to_string());
             }
-            println!(
-                "Found {} in {} files.",
-                parts.join(", "),
-                files_with_issues
-            );
+            println!("Found {} in {} files.", parts.join(", "), files_with_issues);
         }
     }
 
@@ -144,23 +131,14 @@ impl<'a> Reporter<'a> {
             if fixed == 0 {
                 println!("{}", "No files would be modified.".green());
             } else {
-                println!(
-                    "{}",
-                    format!("Would fix {} files.", fixed).blue()
-                );
+                println!("{}", format!("Would fix {} files.", fixed).blue());
             }
         } else {
             if fixed > 0 {
-                println!(
-                    "{}",
-                    format!("Fixed {} files.", fixed).green()
-                );
+                println!("{}", format!("Fixed {} files.", fixed).green());
             }
             if failed > 0 {
-                println!(
-                    "{}",
-                    format!("Failed to fix {} files.", failed).red()
-                );
+                println!("{}", format!("Failed to fix {} files.", failed).red());
             }
             if fixed == 0 && failed == 0 {
                 println!("{}", "No files needed fixing.".green());

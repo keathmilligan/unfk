@@ -288,12 +288,10 @@ fn run_types(show: Option<&str>) -> Result<unfk::ExitCode> {
 fn run_config(config: &Config, dump: bool) -> Result<unfk::ExitCode> {
     if dump {
         println!("{}", toml::to_string_pretty(config)?);
+    } else if let Some(path) = &config.source_path {
+        println!("Configuration loaded from: {}", path.display());
     } else {
-        if let Some(path) = &config.source_path {
-            println!("Configuration loaded from: {}", path.display());
-        } else {
-            println!("Using default configuration (no config file found)");
-        }
+        println!("Using default configuration (no config file found)");
     }
 
     Ok(unfk::ExitCode::Success)

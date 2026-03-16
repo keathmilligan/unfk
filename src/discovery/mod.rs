@@ -102,10 +102,9 @@ pub fn is_binary(path: &Path) -> bool {
     if let Some(ext) = path.extension().and_then(|e| e.to_str()) {
         let binary_extensions = [
             "png", "jpg", "jpeg", "gif", "bmp", "ico", "webp", "svg", "pdf", "zip", "tar", "gz",
-            "bz2", "xz", "7z", "rar", "exe", "dll", "so", "dylib", "a", "o", "obj", "class",
-            "jar", "war", "ear", "wasm", "pyc", "pyo", "beam", "db", "sqlite", "sqlite3", "mp3",
-            "mp4", "avi", "mov", "mkv", "flac", "wav", "ogg", "woff", "woff2", "ttf", "otf",
-            "eot",
+            "bz2", "xz", "7z", "rar", "exe", "dll", "so", "dylib", "a", "o", "obj", "class", "jar",
+            "war", "ear", "wasm", "pyc", "pyo", "beam", "db", "sqlite", "sqlite3", "mp3", "mp4",
+            "avi", "mov", "mkv", "flac", "wav", "ogg", "woff", "woff2", "ttf", "otf", "eot",
         ];
         if binary_extensions.contains(&ext.to_lowercase().as_str()) {
             return true;

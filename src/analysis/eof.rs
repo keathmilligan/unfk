@@ -153,8 +153,8 @@ impl<'a> EofAnalyzer<'a> {
             end_idx
         };
 
-        for i in 0..non_trailing_lines {
-            if lines[i].trim().is_empty() {
+        for line in lines.iter().take(non_trailing_lines) {
+            if line.trim().is_empty() {
                 consecutive_blank += 1;
             } else {
                 if consecutive_blank >= 2 {

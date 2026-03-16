@@ -86,8 +86,8 @@ impl EditorConfigSettings {
                     props
                         .get::<ec4rs::property::TabWidth>()
                         .ok()
-                        .and_then(|tw| match tw {
-                            ec4rs::property::TabWidth::Value(n) => Some(n),
+                        .map(|tw| match tw {
+                            ec4rs::property::TabWidth::Value(n) => n,
                         })
                         .or(Some(4))
                 }

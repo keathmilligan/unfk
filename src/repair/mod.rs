@@ -81,7 +81,8 @@ impl<'a> Repairer<'a> {
                 Issue::MixedIndentation { .. }
                 | Issue::WrongIndentation { .. }
                 | Issue::TabsRequired => {
-                    lines = self.fix_indentation(lines, &settings.indent.style, settings.indent.width);
+                    lines =
+                        self.fix_indentation(lines, &settings.indent.style, settings.indent.width);
                 }
                 _ => {}
             }
@@ -94,13 +95,16 @@ impl<'a> Repairer<'a> {
             LineEnding::Auto => {
                 // Use the dominant style from the file, or LF as default
                 let has_crlf_issue = issues.iter().any(|i| {
-                    matches!(i, Issue::WrongLineEnding { found: LineEndingStyle::Crlf, .. })
+                    matches!(
+                        i,
+                        Issue::WrongLineEnding {
+                            found: LineEndingStyle::Crlf,
+                            ..
+                        }
+                    )
                 });
-                if has_crlf_issue {
-                    "\n" // Convert CRLF to LF
-                } else {
-                    "\n"
-                }
+                let _ = has_crlf_issue; // CRLF files are converted to LF
+                "\n"
             }
         };
 
@@ -109,10 +113,8 @@ impl<'a> Repairer<'a> {
 
         // Ensure final newline based on config setting
         // This is needed because lines.join() doesn't preserve the original trailing newline
-        if settings.final_newline {
-            if !result.ends_with('\n') && !result.ends_with("\r\n") {
-                result.push_str(line_ending);
-            }
+        if settings.final_newline && !result.ends_with('\n') && !result.ends_with("\r\n") {
+            result.push_str(line_ending);
         }
 
         // Remove excessive trailing blank lines
@@ -160,8 +162,10 @@ impl<'a> Repairer<'a> {
         lines
             .into_iter()
             .map(|line| {
-                let leading_whitespace: String =
-                    line.chars().take_while(|c| *c == ' ' || *c == '\t').collect();
+                let leading_whitespace: String = line
+                    .chars()
+                    .take_while(|c| *c == ' ' || *c == '\t')
+                    .collect();
 
                 if leading_whitespace.is_empty() {
                     return line;
@@ -180,11 +184,7 @@ impl<'a> Repairer<'a> {
                     IndentStyle::Tabs => {
                         let tab_count = effective_width / width;
                         let space_remainder = effective_width % width;
-                        format!(
-                            "{}{}",
-                            "\t".repeat(tab_count),
-                            " ".repeat(space_remainder)
-                        )
+                        format!("{}{}", "\t".repeat(tab_count), " ".repeat(space_remainder))
                     }
                     IndentStyle::Spaces => " ".repeat(effective_width),
                 };
@@ -313,15 +313,24 @@ mod tests {
 
         // Verify the file has a final newline before repair
         let before = std::fs::read_to_string(&file_path).unwrap();
-        assert!(before.ends_with('\n'), "File should have final newline before repair");
+        assert!(
+            before.ends_with('\n'),
+            "File should have final newline before repair"
+        );
 
         // Only report trailing whitespace issue (no MissingFinalNewline)
         let issues = vec![Issue::TrailingWhitespace { line_count: 1 }];
         repairer.repair(&file_path, &issues).unwrap();
 
         let content = std::fs::read_to_string(&file_path).unwrap();
-        assert!(!content.contains("   "), "Trailing whitespace should be removed");
-        assert!(content.ends_with('\n'), "Final newline should be preserved after repair");
+        assert!(
+            !content.contains("   "),
+            "Trailing whitespace should be removed"
+        );
+        assert!(
+            content.ends_with('\n'),
+            "Final newline should be preserved after repair"
+        );
     }
 
     #[test]
@@ -374,11 +383,7 @@ mod tests {
         let config = create_config();
         let repairer = Repairer::new(&config);
 
-        let lines = vec![
-            "line1".to_string(),
-            "".to_string(),
-            "line2".to_string(),
-        ];
+        let lines = vec!["line1".to_string(), "".to_string(), "line2".to_string()];
 
         let result = repairer.remove_successive_blank_lines(lines.clone());
         assert_eq!(result.len(), 3);
