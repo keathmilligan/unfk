@@ -215,6 +215,16 @@ else
         || cargo generate-lockfile
 
     # ---------------------------------------------------------------------------
+    # Update README.md release badge branch reference
+    # ---------------------------------------------------------------------------
+
+    if [[ -f "$README" ]]; then
+        echo "Updating release badge branch in README.md..."
+        sed -i "s|release\.yml/badge\.svg?branch=v[^)]*|release.yml/badge.svg?branch=v${NEW_VERSION}|g" "$README"
+        git add "$README"
+    fi
+
+    # ---------------------------------------------------------------------------
     # Commit and push
     # ---------------------------------------------------------------------------
 
