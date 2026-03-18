@@ -2,10 +2,6 @@
 # release.sh — bump version, commit, tag, and push to trigger the release workflow
 set -euo pipefail
 
-# ---------------------------------------------------------------------------
-# Helpers
-# ---------------------------------------------------------------------------
-
 die() { echo "error: $*" >&2; exit 1; }
 
 usage() {
@@ -64,10 +60,6 @@ is_valid_increment() {
     return 1
 }
 
-# ---------------------------------------------------------------------------
-# Argument check
-# ---------------------------------------------------------------------------
-
 [[ $# -ge 1 ]] || usage
 
 FORCE=false
@@ -82,19 +74,12 @@ NEW_VERSION="${1#v}"   # strip accidental leading 'v'
 # Validate it is at least a well-formed semver.
 parse_semver "$NEW_VERSION" > /dev/null
 
-# ---------------------------------------------------------------------------
-# Locate the repo root (the directory containing this script).
-# ---------------------------------------------------------------------------
-
+# Determine the current version
 REPO_DIR="$(cd "$(dirname "$0")" && pwd)"
 CARGO_TOML="$REPO_DIR/Cargo.toml"
 README="$REPO_DIR/README.md"
 
 [[ -f "$CARGO_TOML" ]] || die "Cargo.toml not found at $CARGO_TOML"
-
-# ---------------------------------------------------------------------------
-# Get the current version from Cargo.toml.
-# ---------------------------------------------------------------------------
 
 CURRENT_VERSION=$(grep -m1 '^version = ' "$CARGO_TOML" | grep -oP '"\K[^"]+(?=")')
 [[ -n "$CURRENT_VERSION" ]] \
@@ -103,10 +88,7 @@ CURRENT_VERSION=$(grep -m1 '^version = ' "$CARGO_TOML" | grep -oP '"\K[^"]+(?=")
 echo "  Current   : $CURRENT_VERSION"
 echo "  New       : $NEW_VERSION"
 
-# ---------------------------------------------------------------------------
 # Validate the increment (skip if this is a retry of same version, or if --force).
-# ---------------------------------------------------------------------------
-
 TAG="v${NEW_VERSION}"
 TAG_EXISTS_REMOTE=false
 git ls-remote --exit-code --tags origin "$TAG" &>/dev/null && TAG_EXISTS_REMOTE=true
@@ -125,16 +107,11 @@ fi
 
 echo "Version increment is valid."
 
-# ---------------------------------------------------------------------------
-# Guard: make sure the working tree is clean before we start.
-# ---------------------------------------------------------------------------
-
 cd "$REPO_DIR"
 if [[ -n "$(git status --porcelain)" ]]; then
     die "Working tree is not clean. Commit or stash your changes first."
 fi
 
-# Guard: make sure we are on master.
 CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
 if [[ "$CURRENT_BRANCH" != "master" ]]; then
     die "Not on master (current branch: '$CURRENT_BRANCH'). Checkout master before releasing."
@@ -153,40 +130,21 @@ if $TAG_EXISTS_LOCALLY && ! $TAG_EXISTS_REMOTE; then
     TAG_EXISTS_LOCALLY=false
 fi
 
-# Handle retry: tag exists on remote (whether locally or not)
+# Handle retry: tag exists on remote - delete it and continue with normal flow
 if $TAG_EXISTS_REMOTE; then
-    echo "Tag '$TAG' already exists on remote — retrying release..."
+    echo "Tag '$TAG' already exists on remote — deleting to allow re-release..."
 
-    # Ensure Cargo.toml is at the correct version before proceeding.
-    CURRENT_CARGO_VERSION=$(grep -m1 '^version = ' "$CARGO_TOML" | grep -oP '"\K[^"]+(?=")')
-    if [[ "$CURRENT_CARGO_VERSION" != "$NEW_VERSION" ]]; then
-        die "Cargo.toml version ($CURRENT_CARGO_VERSION) does not match tag ($NEW_VERSION)."
-    fi
-
-    # Move the tag to HEAD so it picks up any workflow fixes.
-    # The tag push triggers the release workflow via the push:tags event.
-    echo "Moving tag '$TAG' to current HEAD..."
-    
-    # Delete local tag if it exists, then recreate
+    # Delete local tag if it exists
     if $TAG_EXISTS_LOCALLY; then
         git tag -d "$TAG"
     fi
     
-    # Delete and recreate on remote
+    # Delete remote tag
     git push origin ":refs/tags/$TAG"
-    git tag "$TAG"
-    git push origin "$TAG"
-
-    echo ""
-    echo "Done. Tag '$TAG' re-pushed — the GitHub Actions release workflow should now be running."
-    echo "https://github.com/keathmilligan/unfk/actions"
-    exit 0
+    echo "Remote tag deleted. Proceeding with release..."
 fi
 
-# ---------------------------------------------------------------------------
 # Update Cargo.toml
-# ---------------------------------------------------------------------------
-
 CURRENT_CARGO_VERSION=$(grep -m1 '^version = ' "$CARGO_TOML" | grep -oP '"\K[^"]+(?=")')
 
 if [[ "$CURRENT_CARGO_VERSION" == "$NEW_VERSION" ]]; then
@@ -201,28 +159,19 @@ else
     [[ "$UPDATED" == "$NEW_VERSION" ]] \
         || die "Failed to update version in Cargo.toml (got '$UPDATED')."
 
-    # ---------------------------------------------------------------------------
     # Update Cargo.lock
-    # ---------------------------------------------------------------------------
-
     echo "Updating Cargo.lock..."
     cargo update -p unfk --precise "$NEW_VERSION" 2>/dev/null \
         || cargo generate-lockfile
 
-    # ---------------------------------------------------------------------------
     # Update README.md release badge branch reference
-    # ---------------------------------------------------------------------------
-
     if [[ -f "$README" ]]; then
         echo "Updating release badge branch in README.md..."
         sed -i "s|release\.yml/badge\.svg?branch=v[^)]*|release.yml/badge.svg?branch=v${NEW_VERSION}|g" "$README"
         git add "$README"
     fi
 
-    # ---------------------------------------------------------------------------
     # Commit and push
-    # ---------------------------------------------------------------------------
-
     echo "Committing version bump..."
     git add Cargo.toml Cargo.lock
     git commit -m "chore: bump version to ${NEW_VERSION}"
@@ -231,10 +180,7 @@ else
     git push origin master
 fi
 
-# ---------------------------------------------------------------------------
 # Tag and push tag (triggers release workflow)
-# ---------------------------------------------------------------------------
-
 echo "Creating tag $TAG..."
 git tag "$TAG"
 
