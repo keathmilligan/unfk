@@ -33,7 +33,7 @@ jobs:
       enable-install-scripts: true
       enable-homebrew: true
       enable-scoop: true
-      enable-chocolatey: false
+      enable-chocolatey: true
       enable-winget: false
       enable-apt: true
       enable-rpm: true
