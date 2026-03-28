@@ -4,6 +4,11 @@
   <img src="unfk-lt.png" alt="OpenCode logo">
 </picture>
 
+_`UNiversal File... Korrector?`_
+
+A fast CLI tool for scanning and repairing file formatting issues in a broad variety of file types.
+
+---
 [![CI](https://github.com/keathmilligan/unfk/actions/workflows/ci.yml/badge.svg)](https://github.com/keathmilligan/unfk/actions/workflows/ci.yml)
 [![Release](https://github.com/keathmilligan/unfk/actions/workflows/release.yml/badge.svg?branch=v1.3.2)](https://github.com/keathmilligan/unfk/actions/workflows/release.yml)
 [![macOS DMG](https://packages.keathmilligan.net/unfk/badges/macos-dmg.svg)](https://github.com/keathmilligan/unfk/releases/latest)
@@ -16,11 +21,6 @@
 [![Install Scripts](https://packages.keathmilligan.net/unfk/badges/install-scripts.svg)](https://github.com/keathmilligan/unfk/releases/latest)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-_`UNiversal File... Korrector?`_
-
-A fast CLI tool for scanning and repairing file formatting issues in a broad variety of file types.
-
----
 
 ## Overview
 
