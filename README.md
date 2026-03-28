@@ -21,7 +21,6 @@ A fast CLI tool for scanning and repairing file formatting issues in a broad var
 [![Install Scripts](https://packages.keathmilligan.net/unfk/badges/install-scripts.svg)](https://github.com/keathmilligan/unfk/releases/latest)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-
 ## Overview
 
 `unfk` detects and fixes common file formatting inconsistencies:
