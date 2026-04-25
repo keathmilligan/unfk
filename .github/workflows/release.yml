@@ -48,8 +48,8 @@ jobs:
       enable-install-scripts: true
       enable-homebrew: true
       enable-scoop: true
-      enable-chocolatey: true
-      enable-winget: false
+      enable-chocolatey: false
+      enable-winget: true
       enable-apt: true
       enable-rpm: true
       enable-apk: false
