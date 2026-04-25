@@ -33,12 +33,6 @@ scoop bucket add keathmilligan https://github.com/keathmilligan/scoop-bucket
 scoop install unfk
 ```
 
-## Chocolatey (Windows)
-
-```powershell
-choco install unfk
-```
-
 ## Windows MSI
 
 Download the signed `.msi` installer directly from the [GitHub Releases](https://github.com/keathmilligan/unfk/releases) page.
