@@ -10,7 +10,7 @@ A fast CLI tool for scanning and repairing file formatting issues in a broad var
 
 ---
 [![CI](https://github.com/keathmilligan/unfk/actions/workflows/ci.yml/badge.svg)](https://github.com/keathmilligan/unfk/actions/workflows/ci.yml)
-[![Release](https://github.com/keathmilligan/unfk/actions/workflows/release.yml/badge.svg?branch=v1.3.1)](https://github.com/keathmilligan/unfk/actions/workflows/release.yml)
+[![Release](https://github.com/keathmilligan/unfk/actions/workflows/release.yml/badge.svg?branch=v1.3.2)](https://github.com/keathmilligan/unfk/actions/workflows/release.yml)
 [![macOS DMG](https://packages.keathmilligan.net/unfk/badges/macos-dmg.svg)](https://github.com/keathmilligan/unfk/releases/latest)
 [![Windows MSI](https://packages.keathmilligan.net/unfk/badges/msi.svg)](https://github.com/keathmilligan/unfk/releases/latest)
 [![Homebrew](https://packages.keathmilligan.net/unfk/badges/homebrew.svg)](https://github.com/keathmilligan/unfk/releases/latest)
